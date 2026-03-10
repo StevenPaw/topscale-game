@@ -1,0 +1,34 @@
+version: '3.6'
+
+services:
+  websocket:
+    container_name: ddev-${DDEV_SITENAME}-websocket
+    image: node:20-alpine
+    working_dir: /var/www/html/gameserver
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - SILVERSTRIPE_API_URL=https://${DDEV_HOSTNAME}/api
+      - ALLOWED_ORIGINS=https://${DDEV_HOSTNAME},http://localhost:5173
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=db
+      - DB_USER=db
+      - DB_PASSWORD=db
+    volumes:
+      - ../gameserver:/var/www/html/gameserver
+      - websocket_node_modules:/var/www/html/gameserver/node_modules
+    ports:
+      - "3000:3000"
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: $DDEV_APPROOT
+    networks:
+      - default
+      - ddev_default
+    external_links:
+      - "ddev-router:${DDEV_HOSTNAME}"
+
+volumes:
+  websocket_node_modules:

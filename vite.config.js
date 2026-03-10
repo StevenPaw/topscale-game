@@ -1,4 +1,5 @@
 import {defineConfig} from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -17,8 +18,10 @@ export default defineConfig(({ command }) => {
                 usePolling: true, // Enable polling for file changes
             }
         },
-        alias: {
-            alias: [{find: '@', replacement: './app/client/src'}],
+        resolve: {
+            alias: {
+                '@': '/app/client/src/vue',
+            },
         },
         // base: (command === 'build') ? '/_resources/app/client/dist/' : '/', // TODO: .env variable, only on build
         base: './',
@@ -33,12 +36,13 @@ export default defineConfig(({ command }) => {
             'main.js': './app/client/src/js/main.js',
             'main.scss': './app/client/src/scss/main.scss',
             'editor.scss': './app/client/src/scss/editor.scss',
+            'vue-app': './app/client/src/vue/main.js',
             },
         },
         },
         css: {
             devSourcemap: true,
         },
-        plugins: []
+        plugins: [vue()]
     }
 })

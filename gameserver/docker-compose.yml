@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  websocket:
+    build: .
+    container_name: quiz-game-websocket
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"  # Only localhost in production (nginx proxies)
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - SILVERSTRIPE_API_URL=${SILVERSTRIPE_API_URL}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - quiz-game
+
+networks:
+  quiz-game:
+    driver: bridge

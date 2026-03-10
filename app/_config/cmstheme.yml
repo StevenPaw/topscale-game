@@ -1,5 +1,5 @@
 SilverStripe\SiteConfig\SiteConfig:
-  cms_logo: '_resources/app/client/src/images/nlpGmbhIconWhite.svg'
+  cms_logo: '_resources/app/client/icons/admins/questions_admin.svg'
   cms_logo_width: 60 # Optional width constraint
 
 SilverStripe\Admin\LeftAndMain:

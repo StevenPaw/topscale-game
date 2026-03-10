@@ -1,6 +1,3 @@
-import Swiper, {Autoplay, EffectCoverflow, EffectFade, Navigation, Pagination} from 'swiper';
-import GLightbox from "glightbox";
-
 document.addEventListener("DOMContentLoaded", function (event) {
 
     // INIT MENUBUTTON

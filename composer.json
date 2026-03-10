@@ -1,33 +1,31 @@
 {
-    "name": "atwx/standard-silverstripe-template",
+    "name": "stevenpaw/topscale-game",
     "type": "silverstripe-recipe",
-    "description": "A default Silverstripe installation",
+    "description": "A game built on silverstripe",
     "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/wernerkrauss/silverstripe-pure-modal.git"
-        },
         {
             "type": "git",
             "url": "https://github.com/atwx/silverstripe-projectinfo.git"
         },
         {
             "type": "git",
-            "url": "https://github.com/wernerkrauss/silverstripe-ideannotator.git"
+            "url": "https://github.com/StevenPaw/silverstripe-cms-theme.git"
         }
     ],
     "require": {
-        "php": "^8.4",
-        "silverstripe/recipe-cms": "^6.0",
-        "dnadesign/silverstripe-elemental": "^6.0",
+        "php": "^8.3",
         "atwx/silverstripe-vitehelper": "^1.0",
         "ext-json": "*",
         "atwx/silverstripe-projectinfo": "dev-main",
         "symbiote/silverstripe-gridfieldextensions": "^5.0",
-        "silverstripe/linkfield": "^5.0"
+        "silverstripe/recipe-core": "^6.1",
+        "silverstripe/admin": "^3.1",
+        "ryanpotter/silverstripe-cms-theme": "dev-master",
+        "silverstripe/asset-admin": "^3.1",
+        "jonom/focuspoint": "^6.0"
     },
     "require-dev": {
-        "silverleague/ideannotator": "dev-silverstripe6 as 4.0",
+        "silverleague/ideannotator": "^4",
         "wernerkrauss/silverstripe-rector": "^1",
         "cambis/silverstan": "^2",
         "squizlabs/php_codesniffer": "^3",

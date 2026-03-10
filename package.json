@@ -1,9 +1,9 @@
 {
-  "name": "silverstripe-template",
+  "name": "topscale",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "main.js",
-  "author": "Adiwidjaja Teamworks GmbH",
+  "author": "Steven Paw",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
@@ -11,12 +11,19 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
     "sass": "^1.89.2",
-    "vite": "^6"
+    "vite": "~5.0.8",
+    "vite-plugin-pwa": "^0.17.5",
+    "vite-plugin-vue-devtools": "^8.0.5"
   },
   "dependencies": {
-    "glightbox": "^3.0.9",
-    "swiper": "^9.0.4"
+    "axios": "^1.6.7",
+    "pinia": "^2.1.7",
+    "qrcode": "^1.5.4",
+    "socket.io-client": "^4.7.4",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
