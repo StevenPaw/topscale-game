@@ -17,8 +17,8 @@ export const useSocketStore = defineStore('socket', () => {
       // DDEV Development
       return 'http://localhost:3000'
     } else {
-      // Production
-      return `https://${window.location.host}/ws`
+      // Production - Nginx proxies /socket.io/ to WebSocket server
+      return `https://${window.location.host}`
     }
   }
 
