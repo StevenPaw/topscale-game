@@ -10,6 +10,8 @@
 @use "elements/TextImageElement.scss";
 @use "elements/TeaserElement.scss";
 
+@use "vue.scss";
+
 .section {
     max-width: var(--MaxWidth);
     margin: 50px auto;

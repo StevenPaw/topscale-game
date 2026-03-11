@@ -1,10 +1,10 @@
 <template>
   <div class="game-lobby-view">
     <!-- Loading state -->
-    <div v-if="!lobbyCode || loading" class="loading-state" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
-      <div style="text-align: center;">
-        <div style="display: inline-block; width: 60px; height: 60px; border: 4px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top: 1rem; color: var(--text-secondary);">{{ loadingMessage }}</p>
+    <div v-if="!lobbyCode || loading" class="loading-state">
+      <div>
+        <div class="loading-spinner"></div>
+        <p class="loading-text">{{ loadingMessage }}</p>
       </div>
     </div>
 
@@ -23,9 +23,9 @@
       <ScoreboardView v-else-if="gameStore.phase === 'podium'" />
 
       <!-- Unknown phase fallback -->
-      <div v-else style="padding: 2rem; text-align: center;">
+      <div v-else class="unknown-phase">
         <p>Unknown phase: {{ gameStore.phase }}</p>
-        <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.875rem;">
+        <p class="unknown-phase-hint">
           This might indicate a synchronization issue. Try refreshing the page.
         </p>
       </div>
@@ -146,14 +146,3 @@ function cleanupSocketListeners() {
   socketStore.socket?.off('lobby:state-sync')
 }
 </script>
-
-<style scoped>
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.game-lobby-view {
-  min-height: 100vh;
-  background: var(--bg-primary);
-}
-</style>

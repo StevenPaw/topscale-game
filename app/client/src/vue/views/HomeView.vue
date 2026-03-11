@@ -1,7 +1,7 @@
 <template>
   <div class="home-view">
-    <div class="card" style="max-width: 500px; margin: 2rem auto;">
-      <h2 class="text-center mb-6" style="font-size: 2rem; font-weight: 700;">
+    <div class="card home-card">
+      <h2 class="text-center mb-6 welcome-title">
         Welcome! 🎮
       </h2>
 
@@ -27,15 +27,14 @@
 
       <!-- Actions -->
       <div v-else>
-        <p class="text-center mb-6" style="font-size: 1.25rem;">
+        <p class="text-center mb-6 greeting-text">
           Hello, <strong>{{ userStore.username }}</strong>! 👋
         </p>
 
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="button-group">
           <button
             @click="createLobby"
-            class="btn btn-success w-full"
-            style="padding: 1rem;"
+            class="btn btn-success w-full action-button"
             :disabled="isCreating"
           >
             <span v-if="!isCreating">🎯 Create New Lobby</span>
@@ -44,21 +43,19 @@
 
           <button
             @click="showJoinModal = true"
-            class="btn btn-primary w-full"
-            style="padding: 1rem;"
+            class="btn btn-primary w-full action-button"
           >
             🚪 Join Existing Lobby
           </button>
         </div>
 
         <!-- Optional Login -->
-        <div class="mt-6" style="padding-top: 1.5rem; border-top: 2px solid var(--gray-200);">
-          <p class="text-center mb-4" style="font-size: 0.875rem; color: var(--gray-600);">
+        <div class="mt-6 login-section">
+          <p class="text-center mb-4 login-hint">
             Want to save your stats across sessions?
           </p>
           <button
-            class="w-full"
-            style="background: var(--gray-200); color: var(--gray-800); padding: 0.75rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; border: none;"
+            class="w-full login-button"
             @click="showLoginModal = true"
           >
             Login / Register
@@ -67,8 +64,7 @@
 
         <button
           @click="changeUsername"
-          class="mt-4 w-full"
-          style="background: transparent; border: 1px solid var(--gray-300); color: var(--gray-600); padding: 0.5rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.875rem;"
+          class="mt-4 w-full change-name-button"
         >
           Change Name
         </button>
@@ -76,34 +72,33 @@
     </div>
 
     <!-- Login Modal (placeholder) -->
-    <div v-if="showLoginModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;" @click="showLoginModal = false">
-      <div class="card" style="max-width: 400px; margin: 1rem;" @click.stop>
+    <div v-if="showLoginModal" class="modal-overlay" @click="showLoginModal = false">
+      <div class="card modal-card" @click.stop>
         <h3 class="mb-4">Login / Register</h3>
-        <p class="mb-4" style="color: var(--gray-600);">This feature will be implemented soon. For now, you can play without an account!</p>
+        <p class="mb-4 modal-text">This feature will be implemented soon. For now, you can play without an account!</p>
         <button class="btn btn-primary w-full" @click="showLoginModal = false">Close</button>
       </div>
     </div>
 
     <!-- Join Lobby Modal -->
-    <div v-if="showJoinModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;" @click="showJoinModal = false">
-      <div class="card" style="max-width: 400px; margin: 1rem;" @click.stop>
+    <div v-if="showJoinModal" class="modal-overlay" @click="showJoinModal = false">
+      <div class="card modal-card" @click.stop>
         <h3 class="mb-4">Join Lobby</h3>
         <label class="label">Enter lobby code:</label>
         <input
           v-model="joinCode"
           type="text"
           placeholder="e.g. ABC123"
-          class="mb-4"
+          class="mb-4 uppercase-input"
           @keyup.enter="joinLobby"
-          style="text-transform: uppercase;"
           autofocus
         />
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn btn-primary" style="flex: 1;" @click="joinLobby" :disabled="!joinCode.trim() || isJoining">
+        <div class="button-row">
+          <button class="btn btn-primary flex-1" @click="joinLobby" :disabled="!joinCode.trim() || isJoining">
             <span v-if="!isJoining">Join</span>
             <span v-else>Joining...</span>
           </button>
-          <button class="btn" style="flex: 1; background: var(--bg-secondary);" @click="showJoinModal = false">Cancel</button>
+          <button class="btn btn-secondary flex-1" @click="showJoinModal = false">Cancel</button>
         </div>
       </div>
     </div>
@@ -210,17 +205,3 @@ function joinLobby() {
   }, 5000)
 }
 </script>
-
-<style scoped>
-.label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--gray-800);
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-</style>

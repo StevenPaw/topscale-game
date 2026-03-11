@@ -1,0 +1,69 @@
+// QuestionCard component styles
+.card.question-card {
+    transition: all 0.2s ease;
+    margin-bottom: 2rem;
+
+    &.compact {
+        padding: 1rem;
+    }
+
+    &.default {
+        padding: 1.5rem;
+    }
+
+    .question-title {
+        font-weight: 700;
+        text-align: center;
+
+        &.compact {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        &.default {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        &.no-scale {
+            margin-bottom: 0;
+        }
+    }
+
+    .scale-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        &.compact {
+            font-size: 0.75rem;
+        }
+
+        &.default {
+            font-size: 0.875rem;
+        }
+
+        .scale-start {
+            flex: 1;
+            text-align: left;
+            color: var(--text-secondary);
+        }
+
+        .scale-arrow {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .scale-end {
+            flex: 1;
+            text-align: right;
+            color: var(--text-secondary);
+        }
+
+        .scale-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+    }
+}
+

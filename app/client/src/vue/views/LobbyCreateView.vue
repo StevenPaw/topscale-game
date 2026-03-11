@@ -1,36 +1,34 @@
 <template>
   <div class="lobby-create-view">
-    <div class="card" style="max-width: 500px; margin: 2rem auto;">
-      <h2 class="text-center mb-6" style="font-size: 1.75rem;">Create New Lobby</h2>
+    <div class="card create-card">
+      <h2 class="text-center mb-6 create-title">Create New Lobby</h2>
 
       <div v-if="!socketStore.isConnected">
         <p class="text-center mb-4">Connecting to server...</p>
       </div>
 
       <div v-else-if="!isCreating && !lobbyStore.lobbyCode">
-        <p class="text-center mb-6">
+        <p class="text-center mb-6 create-message">
           You will be the host and can configure game settings before starting.
         </p>
 
         <button
           @click="createLobby"
-          class="btn btn-success w-full mb-4"
-          style="padding: 1rem; font-size: 1.125rem;"
+          class="btn btn-success w-full mb-4 create-button"
         >
           🎯 Create Lobby
         </button>
 
         <router-link
           to="/"
-          class="btn w-full"
-          style="background: var(--gray-200); color: var(--gray-800);"
+          class="btn w-full back-button"
         >
           Back to Home
         </router-link>
       </div>
 
-      <div v-else-if="isCreating" class="text-center">
-        <p class="mb-4">Creating lobby...</p>
+      <div v-else-if="isCreating" class="creating-message">
+        <p class="mb-4 creating-text">Creating lobby...</p>
         <div class="spinner"></div>
       </div>
 
@@ -85,28 +83,3 @@ function createLobby() {
   socketStore.createLobby(userStore.username)
 }
 </script>
-
-<style scoped>
-.error-message {
-  background: #fee;
-  color: var(--danger);
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--danger);
-}
-
-.spinner {
-  border: 3px solid var(--gray-200);
-  border-top: 3px solid var(--primary);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>

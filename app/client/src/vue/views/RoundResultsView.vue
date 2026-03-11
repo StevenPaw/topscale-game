@@ -1,15 +1,15 @@
 <template>
-  <div class="round-results-view" style="max-width: 600px; margin: 0 auto; padding: 2rem 1rem; min-height: 100vh;">
+  <div class="round-results-view">
 
     <!-- Moderator Ranking View -->
     <div v-if="isModerator && !resultsSubmitted">
       <!-- Question Card -->
       <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
 
-      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; text-align: center;">
+      <h2 class="view-title">
         Rank the Answers
       </h2>
-      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.875rem;">
+      <p class="instructions">
         <template v-if="gameStore.currentQuestion?.scaleFrom && gameStore.currentQuestion?.scaleTo">
           Sort from <strong>{{ gameStore.currentQuestion.scaleFrom }}</strong> (lowest) to <strong>{{ gameStore.currentQuestion.scaleTo }}</strong> (highest)
         </template>
@@ -19,41 +19,40 @@
       </p>
 
       <!-- Sortable Answer List -->
-      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+      <div class="sortable-list">
         <div
           v-for="(answer, index) in sortedAnswers"
           :key="answer.id"
-          class="card"
-          style="padding: 1rem; display: flex; align-items: center; gap: 1rem;"
+          class="card ranking-item"
         >
           <!-- Rank Number -->
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.125rem; flex-shrink: 0;">
+          <div class="rank-badge">
             {{ index + 1 }}
           </div>
 
           <!-- Answer Text -->
-          <div style="flex: 1;">
-            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+          <div class="answer-content">
+            <div class="answer-username">
               {{ answer.username }}
             </div>
-            <div>{{ answer.text }}</div>
+            <div class="answer-text">{{ answer.text }}</div>
           </div>
 
           <!-- Move Buttons -->
-          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <div class="move-buttons">
             <button
               @click="moveUp(index)"
               :disabled="index === 0"
-              style="background: var(--bg-secondary); border: none; padding: 0.25rem 0.5rem; border-radius: 0.25rem; cursor: pointer; font-size: 1.25rem;"
-              :style="index === 0 ? 'opacity: 0.3; cursor: not-allowed;' : ''"
+              class="move-button"
+              :class="{ disabled: index === 0 }"
             >
               ▲
             </button>
             <button
               @click="moveDown(index)"
               :disabled="index === sortedAnswers.length - 1"
-              style="background: var(--bg-secondary); border: none; padding: 0.25rem 0.5rem; border-radius: 0.25rem; cursor: pointer; font-size: 1.25rem;"
-              :style="index === sortedAnswers.length - 1 ? 'opacity: 0.3; cursor: not-allowed;' : ''"
+              class="move-button"
+              :class="{ disabled: index === sortedAnswers.length - 1 }"
             >
               ▼
             </button>
@@ -64,8 +63,7 @@
       <!-- Submit Ranking Button -->
       <button
         @click="submitRanking"
-        class="btn btn-success w-full"
-        style="padding: 1.125rem; font-size: 1.125rem;"
+        class="btn btn-success w-full submit-ranking-button"
       >
         Submit Ranking
       </button>
@@ -76,38 +74,39 @@
       <!-- Question Card for Non-Moderators -->
       <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
 
-      <div class="card" style="padding: 3rem 2rem; text-align: center;">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
-        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Moderator is Ranking</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+      <div class="card waiting-card">
+        <div class="waiting-icon">⏳</div>
+        <h3 class="waiting-title">Moderator is Ranking</h3>
+        <p class="waiting-message">
           Watch as they sort the answers...
         </p>
       </div>
 
       <!-- Live Ranking Preview (Non-Moderators see this) -->
-      <div v-if="liveRankingAnswers.length > 0" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; text-align: left;">
+      <div v-if="liveRankingAnswers.length > 0" class="live-ranking-list">
         <div
           v-for="(answer, index) in liveRankingAnswers"
           :key="answer.id"
-          class="card"
-          style="padding: 1rem; display: flex; align-items: center; gap: 1rem; background: rgba(20, 184, 166, 0.1);"
+          class="card live-ranking-item"
         >
           <!-- Rank Number -->
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.125rem; flex-shrink: 0;">
+          <div class="rank-badge">
             {{ index + 1 }}
           </div>
 
           <!-- Answer Text -->
-          <div style="flex: 1;">
-            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+          <div class="answer-content">
+            <div class="answer-username">
               {{ answer.username }}
             </div>
-            <div>{{ answer.text }}</div>
+            <div class="answer-text">{{ answer.text }}</div>
           </div>
         </div>
       </div>
 
-      <div v-else style="margin-top: 2rem; display: inline-block; width: 40px; height: 40px; border: 3px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <div v-else class="spinner-container">
+        <div class="spinner"></div>
+      </div>
     </div>
 
     <!-- Results Display (After Moderator Submit) -->
@@ -115,77 +114,75 @@
       <!-- Question Card in Results -->
       <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
 
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <div v-if="results.isCorrect" style="font-size: 3rem; margin-bottom: 0.5rem;">✅</div>
-        <div v-else style="font-size: 3rem; margin-bottom: 0.5rem;">❌</div>
+      <div class="results-header">
+        <div v-if="results.isCorrect" class="result-icon success">✅</div>
+        <div v-else class="result-icon error">❌</div>
 
-        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+        <h2 class="result-title">
           {{ results.isCorrect ? 'Perfect Ranking!' : 'Not Quite!' }}
         </h2>
-        <p style="color: var(--text-secondary);">
+        <p class="result-message">
           {{ results.isCorrect ? 'Moderator got the ranking correct!' : 'Moderator\'s ranking was incorrect' }}
         </p>
       </div>
 
       <!-- Answers with Scale Values Revealed -->
-      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+      <div class="revealed-answers-list">
         <div
           v-for="answer in results.answers"
           :key="answer.id"
-          class="card"
-          style="padding: 1rem; display: flex; align-items: center; gap: 1rem;"
+          class="card revealed-answer-item"
         >
           <!-- Scale Number (Revealed) -->
-          <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.5rem; flex-shrink: 0;">
+          <div class="scale-badge">
             {{ answer.scaleValue }}
           </div>
 
           <!-- Answer -->
-          <div style="flex: 1;">
-            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+          <div class="answer-content">
+            <div class="answer-username">
               {{ answer.username }}
             </div>
-            <div>{{ answer.text }}</div>
+            <div class="answer-text">{{ answer.text }}</div>
           </div>
         </div>
       </div>
 
       <!-- Current Scores -->
-      <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Current Scores</h3>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <div class="card current-scores-card">
+        <h3 class="scores-title">Current Scores</h3>
+        <div class="scores-list">
           <div
             v-for="(score, playerId) in results.scores"
             :key="playerId"
-            style="display: flex; justify-content: space-between; align-items: center;"
+            class="score-row"
           >
-            <span>{{ getPlayerName(playerId) }}</span>
-            <span style="font-weight: 700; font-size: 1.125rem; color: var(--primary);">{{ score }}</span>
+            <span class="player-name">{{ getPlayerName(playerId) }}</span>
+            <span class="score-value">{{ score }}</span>
           </div>
         </div>
       </div>
 
       <!-- Ranking Analysis -->
-      <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">
+      <div class="card ranking-analysis-card">
+        <h3 class="analysis-title">
           Ranking Details
-          <span v-if="results.isCorrect" style="color: var(--success); margin-left: 0.5rem;">✓ Perfect!</span>
-          <span v-else style="color: #ef4444; margin-left: 0.5rem;">✗ Not quite right</span>
+          <span v-if="results.isCorrect" class="status-badge success">✓ Perfect!</span>
+          <span v-else class="status-badge error">✗ Not quite right</span>
         </h3>
 
         <!-- Points Summary -->
         <div
           v-if="results.pointsEarned !== undefined"
-          class="card"
-          style="padding: 1rem; margin-bottom: 1.5rem; background: rgba(20, 184, 166, 0.15); border: 2px solid var(--primary); text-align: center;"
+          class="card points-summary"
         >
-          <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+          <div class="summary-label">
             Moderator earned this round
           </div>
-          <div style="font-size: 2rem; font-weight: 700; color: var(--primary);">
-            {{ results.pointsEarned }} <span style="font-size: 1.25rem; font-weight: 400;">/ 100</span>
+          <div class="points-earned">
+            {{ results.pointsEarned }} <span class="max-points">/ 100</span>
           </div>
-          <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;">
+          <div class="summary-details">
             {{ results.correctlyPositioned }} of {{ results.totalAnswers }} correct
             <span v-if="results.totalAnswers > 0">
               ({{ Math.round(100 / results.totalAnswers) }} points per correct position)
@@ -193,62 +190,42 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div class="ranking-details-list">
           <div
             v-for="detail in rankingDetails"
             :key="detail.answerId"
-            class="card"
-            :style="{
-              padding: '1rem',
-              background: detail.isCorrect ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-              border: `2px solid ${detail.isCorrect ? 'var(--success)' : '#ef4444'}`
-            }"
+            class="card ranking-detail-item"
+            :class="{ correct: detail.isCorrect, incorrect: !detail.isCorrect }"
           >
-            <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="detail-content">
               <!-- Status Icon -->
-              <div
-                :style="{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: detail.isCorrect ? 'var(--success)' : '#ef4444',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.125rem',
-                  fontWeight: '700',
-                  color: 'white',
-                  flexShrink: '0'
-                }"
-              >
+              <div class="status-icon" :class="{ correct: detail.isCorrect, incorrect: !detail.isCorrect }">
                 {{ detail.isCorrect ? '✓' : '✗' }}
               </div>
 
               <!-- Answer Content -->
-              <div style="flex: 1;">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                  <div>
-                    <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-secondary);">
+              <div class="answer-info">
+                <div class="info-header">
+                  <div class="user-answer">
+                    <div class="detail-username">
                       {{ detail.username }}
                     </div>
-                    <div style="margin-top: 0.25rem;">{{ detail.answerText }}</div>
+                    <div class="detail-answer-text">{{ detail.answerText }}</div>
                   </div>
-                  <div
-                    style="padding: 0.25rem 0.75rem; border-radius: 1rem; background: var(--primary); color: white; font-weight: 600; font-size: 0.875rem; flex-shrink: 0; margin-left: 1rem;"
-                  >
+                  <div class="actual-value-badge">
                     {{ detail.actualValue }}
                   </div>
                 </div>
 
                 <!-- Position Info -->
-                <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
-                  <div>
-                    <span style="font-weight: 600;">Moderator Rank:</span> #{{ detail.moderatorPosition }}
+                <div class="position-info">
+                  <div class="position-item">
+                    <span class="position-label">Moderator Rank:</span> #{{ detail.moderatorPosition }}
                   </div>
-                  <div>
-                    <span style="font-weight: 600;">Correct Rank:</span> #{{ detail.correctPosition }}
+                  <div class="position-item">
+                    <span class="position-label">Correct Rank:</span> #{{ detail.correctPosition }}
                   </div>
-                  <div v-if="!detail.isCorrect" style="color: #ef4444; font-weight: 600;">
+                  <div v-if="!detail.isCorrect" class="position-diff">
                     ({{ detail.positionDiff > 0 ? '+' : '' }}{{ detail.positionDiff }} off)
                   </div>
                 </div>
@@ -259,7 +236,7 @@
       </div>
 
       <!-- Next Round / End Game -->
-      <div style="text-align: center; color: var(--text-secondary); font-size: 0.875rem;">
+      <div class="transition-message">
         {{ isLastRound ? 'Game ending...' : 'Next round starting soon...' }}
       </div>
     </div>
@@ -401,9 +378,3 @@ function getPlayerName(playerId) {
 // This should be passed from GameView or fetched from a store
 // For now, we'll rely on the socket event to determine moderator
 </script>
-
-<style scoped>
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-</style>

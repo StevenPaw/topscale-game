@@ -1,0 +1,25 @@
+// Vue Component Styles
+
+// Theme and base styles
+@use "vue-base.scss";
+
+// App component
+@use "app.scss";
+
+// Views
+@use "views/homeview.scss";
+@use "views/lobbycreateview.scss";
+@use "views/lobbyjoinview.scss";
+@use "views/lobbywaitview.scss";
+@use "views/gamelobbyview.scss";
+@use "views/gameview.scss";
+@use "views/roundresultsview.scss";
+@use "views/scoreboardview.scss";
+
+// Components
+@use "components/questioncard.scss";
+
+// Animations
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

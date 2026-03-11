@@ -1,0 +1,183 @@
+.game-view {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+
+    .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--success);
+            }
+
+            .status-text {
+                font-size: 0.875rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+        }
+
+        .round-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+    }
+
+    .moderator-view {
+        .moderator-card {
+            padding: 3rem 2rem;
+            text-align: center;
+
+            .moderator-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+            .moderator-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+
+            .moderator-message {
+                color: var(--text-secondary);
+                margin-bottom: 1.5rem;
+            }
+
+            .answer-count {
+                margin: 2rem 0;
+
+                .count-display {
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    color: var(--primary);
+                }
+
+                .count-label {
+                    font-size: 0.875rem;
+                    color: var(--text-secondary);
+                    margin-top: 0.5rem;
+                }
+            }
+
+            .all-answers-complete {
+                margin-top: 2rem;
+
+                .complete-message {
+                    font-weight: 600;
+                    color: var(--success);
+                    margin-bottom: 1rem;
+                }
+
+                .complete-hint {
+                    color: var(--text-secondary);
+                    font-size: 0.875rem;
+                }
+
+                .success-spinner {
+                    margin-top: 1rem;
+                    display: inline-block;
+                    width: 40px;
+                    height: 40px;
+                    border: 3px solid var(--success);
+                    border-top-color: transparent;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }
+            }
+
+            .waiting-spinner {
+                margin-top: 1.5rem;
+                display: inline-block;
+                width: 40px;
+                height: 40px;
+                border: 3px solid var(--primary);
+                border-top-color: transparent;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+        }
+    }
+
+    .player-view {
+        .scale-display {
+            text-align: center;
+            margin-bottom: 3rem;
+
+            .scale-number {
+                font-size: 8rem;
+                font-weight: 700;
+                color: var(--primary);
+                line-height: 1;
+            }
+
+            .scale-label {
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+                margin-top: 0.5rem;
+            }
+        }
+
+        .answer-input {
+            textarea {
+                margin-bottom: 1rem;
+                resize: vertical;
+                min-height: 100px;
+            }
+
+            .submit-button {
+                padding: 1.125rem;
+                font-size: 1.125rem;
+
+                .submit-icon {
+                    margin-left: 0.5rem;
+                }
+            }
+        }
+
+        .answer-submitted {
+            padding: 2rem;
+            text-align: center;
+            background: rgba(16, 185, 129, 0.1);
+
+            .submit-icon-large {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .submit-title {
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+
+            .submit-message {
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+            }
+        }
+    }
+
+    .timer-display {
+        margin-top: 2rem;
+        text-align: center;
+
+        .timer-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+    }
+}

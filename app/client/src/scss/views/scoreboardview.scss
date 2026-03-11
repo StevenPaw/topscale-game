@@ -1,0 +1,275 @@
+.scoreboard-view {
+  .scoreboard-card {
+    max-width: 800px;
+    margin: 2rem auto;
+
+    .scoreboard-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .subtitle {
+        color: var(--gray-600);
+        font-size: 1.125rem;
+      }
+    }
+
+    .winner-podium {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 2rem;
+      border-radius: 1rem;
+      color: white;
+      text-align: center;
+      margin-bottom: 1.5rem;
+
+      .trophy-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .winner-name {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .winner-points {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+    }
+
+    .rankings-section {
+      margin-bottom: 1.5rem;
+
+      h3 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .rankings-grid {
+        display: grid;
+        gap: 0.75rem;
+
+        .rank-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.25rem;
+          background: white;
+          border: 2px solid var(--gray-200);
+          border-radius: 0.75rem;
+          transition: all 0.2s;
+
+          &.first-place {
+            border-color: gold;
+            background: #fffbeb;
+          }
+
+          &.second-place {
+            border-color: silver;
+          }
+
+          &.third-place {
+            border-color: #cd7f32;
+          }
+
+          .rank-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            .rank-position {
+              font-size: 1.5rem;
+              font-weight: 700;
+              min-width: 2rem;
+            }
+
+            .player-name {
+              font-size: 1.125rem;
+              font-weight: 600;
+            }
+          }
+
+          .rank-score {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+          }
+        }
+      }
+    }
+
+    .game-stats {
+      background: var(--gray-100);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+
+      h4 {
+        margin-bottom: 0.75rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+
+        .stat-item {
+          text-align: center;
+
+          .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+          }
+
+          .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+          }
+        }
+      }
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      .action-button {
+        flex: 1;
+        padding: 1rem;
+        font-size: 1.125rem;
+      }
+    }
+
+    .host-hint {
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .questions-recap {
+      margin-top: 1.5rem;
+      border-top: 2px solid var(--gray-200);
+      padding-top: 2rem;
+
+      .recap-title {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .recap-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        .recap-item {
+          border: 2px solid var(--gray-200);
+          border-radius: 0.75rem;
+          overflow: hidden;
+
+          .round-header {
+            background: var(--gray-100);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .round-label {
+              font-weight: 600;
+              font-size: 0.875rem;
+              color: var(--gray-600);
+            }
+
+            .moderator-info {
+              font-size: 0.875rem;
+              color: var(--gray-600);
+
+              .points-display {
+                margin-left: 0.5rem;
+                color: var(--primary);
+                font-weight: 600;
+              }
+            }
+          }
+
+          .question-content {
+            padding: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+          }
+
+          .answers-content {
+            padding: 1rem;
+
+            .answers-title {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--gray-600);
+              margin-bottom: 0.75rem;
+            }
+
+            .answers-list {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+
+              .answer-item {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                background: var(--gray-50);
+                border-radius: 0.5rem;
+                border: 1px solid var(--gray-200);
+
+                .answer-position {
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 50%;
+                  background: var(--primary);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 0.875rem;
+                  color: white;
+                  flex-shrink: 0;
+                }
+
+                .answer-content {
+                  flex: 1;
+                  min-width: 0;
+
+                  .answer-username {
+                    font-weight: 600;
+                    font-size: 0.75rem;
+                    color: var(--gray-600);
+                    margin-bottom: 0.125rem;
+                  }
+
+                  .answer-text {
+                    font-size: 0.875rem;
+                  }
+                }
+
+                .answer-scale {
+                  padding: 0.25rem 0.625rem;
+                  border-radius: 0.5rem;
+                  background: var(--primary);
+                  color: white;
+                  font-weight: 600;
+                  font-size: 0.875rem;
+                  flex-shrink: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

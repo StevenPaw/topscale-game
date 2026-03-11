@@ -1,0 +1,59 @@
+// LobbyJoinView styles
+.lobby-join-view {
+  .join-card {
+    max-width: 500px;
+    margin: 2rem auto;
+  }
+
+  .join-title {
+    font-size: 1.75rem;
+  }
+
+  .code-input {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 0.2em;
+  }
+
+  .spectator-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+      width: auto;
+    }
+  }
+
+  .join-button {
+    padding: 1rem;
+    font-size: 1.125rem;
+  }
+
+  .back-button {
+    background: var(--gray-200);
+    color: var(--gray-800);
+  }
+
+  .label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gray-800);
+  }
+
+  .error-message {
+    background: #fee;
+    color: var(--danger);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--danger);
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

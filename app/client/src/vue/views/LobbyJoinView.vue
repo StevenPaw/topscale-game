@@ -1,7 +1,7 @@
 <template>
   <div class="lobby-join-view">
-    <div class="card" style="max-width: 500px; margin: 2rem auto;">
-      <h2 class="text-center mb-6" style="font-size: 1.75rem;">Join Lobby</h2>
+    <div class="card join-card">
+      <h2 class="text-center mb-6 join-title">Join Lobby</h2>
 
       <div v-if="!socketStore.isConnected">
         <p class="text-center mb-4">Connecting to server...</p>
@@ -14,20 +14,18 @@
             v-model="lobbyCode"
             type="text"
             placeholder="ABC123"
-            class="mb-4"
-            style="text-transform: uppercase; font-size: 1.5rem; text-align: center; letter-spacing: 0.2em;"
+            class="mb-4 code-input"
             maxlength="6"
             @input="lobbyCode = lobbyCode.toUpperCase()"
             @keyup.enter="joinAsPlayer"
             autofocus
           />
 
-          <div class="mb-4">
-            <label style="display: flex; align-items: center; cursor: pointer;">
+          <div class="mb-4 spectator-checkbox">
+            <label>
               <input
                 type="checkbox"
                 v-model="joinAsSpectator"
-                style="margin-right: 0.5rem; width: auto;"
               />
               <span>Join as Spectator (watch only)</span>
             </label>
@@ -35,7 +33,7 @@
 
           <button
             @click="joinAsPlayer"
-            class="btn btn-primary w-full mb-4"
+            class="btn btn-primary w-full mb-4 join-button"
             :disabled="lobbyCode.length !== 6 || isJoining"
           >
             {{ isJoining ? 'Joining...' : 'Join Lobby' }}
@@ -47,8 +45,7 @@
 
           <router-link
             to="/"
-            class="btn w-full"
-            style="background: var(--gray-200); color: var(--gray-800);"
+            class="btn w-full back-button"
           >
             Back to Home
           </router-link>
@@ -119,25 +116,3 @@ function joinAsPlayer() {
   )
 }
 </script>
-
-<style scoped>
-.label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--gray-800);
-}
-
-.error-message {
-  background: #fee;
-  color: var(--danger);
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--danger);
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-</style>

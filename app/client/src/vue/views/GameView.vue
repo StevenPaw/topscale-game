@@ -1,14 +1,14 @@
 <template>
-  <div class="game-view" style="max-width: 500px; margin: 0 auto; padding: 2rem 1rem; min-height: 100vh;">
+  <div class="game-view">
     <!-- Game Status Header -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success);"></div>
-        <span style="font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+    <div class="game-header">
+      <div class="status-indicator">
+        <div class="status-dot"></div>
+        <span class="status-text">
           Game Active
         </span>
       </div>
-      <span style="font-size: 0.875rem; color: var(--text-secondary);">
+      <span class="round-counter">
         Round {{ currentRound }} of {{ totalRounds }}
       </span>
     </div>
@@ -18,33 +18,33 @@
 
     <!-- Moderator View: Waiting for answers -->
     <div v-if="isModerator">
-      <div class="card" style="padding: 3rem 2rem; text-align: center;">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🎭</div>
-        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">You are the Moderator</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+      <div class="card moderator-card">
+        <div class="moderator-icon">🎭</div>
+        <h3 class="moderator-title">You are the Moderator</h3>
+        <p class="moderator-description">
           Waiting for players to submit their answers...
         </p>
 
         <!-- Answer Count -->
-        <div style="margin: 2rem 0;">
-          <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary);">
+        <div class="answer-count-container">
+          <div class="answer-count">
             {{ answersReceived }} / {{ totalPlayersExpected }}
           </div>
-          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+          <p class="answer-count-label">
             answers received
           </p>
         </div>
 
-        <div v-if="allAnswersReceived" style="margin-top: 2rem;">
-          <p style="font-weight: 600; color: var(--success); margin-bottom: 1rem;">All answers received!</p>
-          <p style="color: var(--text-secondary); font-size: 0.875rem;">
+        <div v-if="allAnswersReceived" class="answers-complete">
+          <p class="complete-message">All answers received!</p>
+          <p class="transition-message">
             Moving to ranking phase...
           </p>
-          <div style="margin-top: 1rem; display: inline-block; width: 40px; height: 40px; border: 3px solid var(--success); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <div class="spinner success"></div>
         </div>
 
         <div v-else>
-          <div style="margin-top: 1.5rem; display: inline-block; width: 40px; height: 40px; border: 3px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <div class="spinner"></div>
         </div>
       </div>
     </div>
@@ -52,11 +52,11 @@
     <!-- Player View: Scale number and answer input -->
     <div v-else>
       <!-- Big Scale Number -->
-      <div style="text-align: center; margin-bottom: 3rem;">
-        <div style="font-size: 8rem; font-weight: 700; color: var(--primary); line-height: 1;">
+      <div class="scale-display">
+        <div class="scale-number">
           {{ myScaleValue || '?' }}
         </div>
-        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+        <p class="scale-label">
           Your position on the scale
         </p>
       </div>
@@ -67,33 +67,32 @@
           v-model="myAnswer"
           placeholder="E.g., It's pretty good, I'd..."
           rows="3"
-          style="margin-bottom: 1rem; resize: vertical; min-height: 100px;"
+          class="answer-textarea"
         ></textarea>
 
         <button
           @click="submitAnswer"
-          class="btn btn-success w-full"
-          style="padding: 1.125rem; font-size: 1.125rem;"
+          class="btn btn-success w-full submit-button"
           :disabled="!myAnswer.trim()"
         >
           <span>Submit</span>
-          <span style="margin-left: 0.5rem;">✓</span>
+          <span class="submit-icon">✓</span>
         </button>
       </div>
 
       <!-- Answer Submitted -->
-      <div v-else class="card" style="padding: 2rem; text-align: center; background: rgba(16, 185, 129, 0.1);">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">✓</div>
-        <p style="font-weight: 600; margin-bottom: 0.5rem;">Answer Submitted!</p>
-        <p style="font-size: 0.875rem; color: var(--text-secondary);">
+      <div v-else class="card submitted-card">
+        <div class="check-icon">✓</div>
+        <p class="submitted-title">Answer Submitted!</p>
+        <p class="submitted-message">
           Waiting for other players and moderator...
         </p>
       </div>
     </div>
 
     <!-- Timer (if active) -->
-    <div v-if="timeRemaining > 0" style="margin-top: 2rem; text-align: center;">
-      <div style="font-size: 2rem; font-weight: 600; color: var(--primary);">
+    <div v-if="timeRemaining > 0" class="timer-display">
+      <div class="timer-value">
         {{ timeRemaining }}s
       </div>
     </div>
@@ -191,9 +190,3 @@ function submitAnswer() {
   answerSubmitted.value = true
 }
 </script>
-
-<style scoped>
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-</style>

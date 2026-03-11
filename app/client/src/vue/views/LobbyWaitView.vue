@@ -1,71 +1,71 @@
 <template>
-  <div class="lobby-wait-view" style="max-width: 500px; margin: 0 auto; padding: 2rem 1rem;">
+  <div class="lobby-wait-view">
     <!-- Header with Settings Button -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-      <h1 style="font-size: 1.5rem; font-weight: 600;">Game Lobby</h1>
+    <div class="lobby-header">
+      <h1 class="lobby-title">Game Lobby</h1>
       <button
         v-if="lobbyStore.isHost"
         @click="showSettings = true"
-        style="background: var(--bg-secondary); border: none; padding: 0.75rem; border-radius: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+        class="settings-button"
       >
-        <span style="font-size: 1.25rem;">⚙️</span>
+        <span class="settings-icon">⚙️</span>
       </button>
     </div>
 
     <!-- Lobby Code Card -->
-    <div class="card" style="text-align: center; padding: 2rem; margin-bottom: 2rem;">
-      <p style="text-transform: uppercase; font-size: 0.875rem; color: var(--primary); font-weight: 600; letter-spacing: 0.1em; margin-bottom: 0.5rem;">
+    <div class="card code-card">
+      <p class="code-label">
         Lobby Code
       </p>
 
-      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;">
-        <div style="font-size: 3rem; font-weight: 700; color: var(--primary); letter-spacing: 0.15em;">
+      <div class="code-display">
+        <div class="code-text">
           {{ lobbyStore.lobbyCode || route.params.code }}
         </div>
         <button
           @click="copyLobbyCode"
-          style="background: transparent; border: none; cursor: pointer; padding: 0.5rem; border-radius: 0.5rem;"
+          class="copy-button"
           title="Copy code"
         >
-          <span style="font-size: 1.5rem;">📋</span>
+          <span class="copy-icon">📋</span>
         </button>
       </div>
 
       <!-- QR Code -->
-      <div style="margin: 1.5rem 0;">
-        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Scan to join</p>
+      <div class="qr-container">
+        <p class="qr-label">Scan to join</p>
         <canvas
           ref="qrCanvas"
-          style="max-width: 200px; width: 100%; height: auto; margin: 0 auto; display: block; border-radius: 0.5rem; background: white; padding: 1rem;"
+          class="qr-canvas"
         ></canvas>
       </div>
     </div>
 
     <!-- Players List -->
-    <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 style="font-size: 1.125rem; font-weight: 600;">Players Joined</h3>
-        <span style="background: var(--bg-secondary); padding: 0.375rem 0.875rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+    <div class="card players-card">
+      <div class="players-header">
+        <h3 class="players-title">Players Joined</h3>
+        <span class="player-count">
           {{ lobbyStore.playerCount }} Player{{ lobbyStore.playerCount !== 1 ? 's' : '' }}
         </span>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <div class="players-list">
         <div
           v-for="player in lobbyStore.players"
           :key="player.id"
-          style="display: flex; align-items: center; gap: 0.875rem; padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.75rem;"
+          class="player-item"
         >
           <!-- Avatar Circle -->
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
+          <div class="player-avatar">
             {{ player.username.charAt(0).toUpperCase() }}
           </div>
 
-          <div style="flex: 1;">
-            <div style="font-weight: 600;">{{ player.username }}</div>
+          <div class="player-name-container">
+            <div class="player-name">{{ player.username }}</div>
           </div>
 
-          <span v-if="player.isHost" style="background: var(--success); color: white; padding: 0.25rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600;">
+          <span v-if="player.isHost" class="host-badge">
             👑 Host
           </span>
         </div>
@@ -76,15 +76,14 @@
     <button
       v-if="lobbyStore.isHost"
       @click="startGame"
-      class="btn btn-success w-full"
-      style="padding: 1.125rem; font-size: 1.125rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;"
+      class="btn btn-success w-full start-game-button"
       :disabled="lobbyStore.playerCount < 2 || !hasQuestionPacks"
     >
       <span>▶</span>
       <span>Start Game</span>
     </button>
 
-    <p v-if="lobbyStore.isHost && lobbyStore.playerCount < 2" class="text-center mt-4" style="color: var(--text-secondary); font-size: 0.875rem;">
+    <p v-if="lobbyStore.isHost && lobbyStore.playerCount < 2" class="warning-message">
       ⚠️ Need at least 2 players to start
     </p>
 
@@ -92,66 +91,65 @@
     <div
       v-if="showSettings"
       @click="showSettings = false"
-      style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: flex-start; justify-content: center; z-index: 1000; padding: 2rem 1rem; overflow-y: auto;"
+      class="modal-overlay"
     >
       <div
         @click.stop
-        class="card"
-        style="max-width: 500px; width: 100%; margin-top: 2rem;"
+        class="card settings-modal"
       >
         <!-- Settings Header -->
-        <div style="display: flex; align-items: center; margin-bottom: 2rem;">
+        <div class="settings-header">
           <button
             @click="showSettings = false"
-            style="background: transparent; border: none; color: var(--text-primary); cursor: pointer; font-size: 1.5rem; padding: 0.25rem; margin-right: 0.75rem;"
+            class="back-button"
           >
             ←
           </button>
-          <h2 style="font-size: 1.5rem; font-weight: 600;">Game Settings</h2>
+          <h2 class="settings-title">Game Settings</h2>
         </div>
 
         <!-- Question Packs -->
-        <div style="margin-bottom: 2rem;">
-          <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Question Packs</h3>
+        <div class="settings-section">
+          <h3 class="section-title">Question Packs</h3>
 
           <!-- Loading State -->
-          <div v-if="loadingQuestionPacks" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-            <div style="display: inline-block; width: 40px; height: 40px; border: 3px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            <p style="margin-top: 1rem; font-size: 0.875rem;">Loading question packs...</p>
+          <div v-if="loadingQuestionPacks" class="loading-state">
+            <div class="spinner"></div>
+            <p class="loading-text">Loading question packs...</p>
           </div>
 
           <!-- Question Pack List -->
-          <div v-else style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div v-else class="pack-list">
             <label
               v-for="pack in availableQuestionPacks"
               :key="pack.id"
-              style="display: flex; align-items: center; gap: 0.875rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.75rem; cursor: pointer;"
+              class="pack-item"
             >
               <input
                 type="checkbox"
                 v-model="pack.selected"
-                style="width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer;"
+                class="pack-checkbox"
               />
-              <div style="flex: 1;">
-                <div style="font-weight: 500;">{{ pack.title }}</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              <div class="pack-info">
+                <div class="pack-title">{{ pack.title }}</div>
+                <div class="pack-count">
                   {{ pack.questionCount }} questions
                 </div>
               </div>
             </label>
 
-            <p v-if="!hasQuestionPacks" style="color: var(--error); font-size: 0.875rem; margin-top: 0.5rem;">
+            <p v-if="!hasQuestionPacks" class="error-message">
               ⚠️ Please select at least one question pack
             </p>
           </div>
         </div>
 
         <!-- Game Rules -->
-        <div style="margin-bottom: 2rem;">
-          <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Game Rules</h3>
+        <div class="settings-section">
+          <h3 class="section-title">Game Rules</h3>
 
-          <div style="margin-bottom: 1.5rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+          <div class="input-group">
+            <label class="input-label">
               Number of Rounds
             </label>
             <input
@@ -159,12 +157,12 @@
               v-model="settings.totalRounds"
               min="5"
               max="20"
-              style="background: var(--bg-secondary);"
+              class="number-input"
             />
           </div>
 
-          <div style="margin-bottom: 1.5rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+          <div class="input-group">
+            <label class="input-label">
               Max Round Timer
             </label>
             <input
@@ -172,28 +170,26 @@
               v-model="settings.timeLimit"
               min="30"
               max="180"
-              style="background: var(--bg-secondary);"
+              class="number-input"
             />
-            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">In seconds</p>
+            <p class="input-hint">In seconds</p>
           </div>
         </div>
 
         <!-- Leaderboard -->
-        <div style="margin-bottom: 2rem;">
-          <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Leaderboard</h3>
-          <label
-            style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--success); background: rgba(20, 184, 166, 0.1); border-radius: 0.75rem;"
-          >
+        <div class="settings-section">
+          <h3 class="section-title">Leaderboard</h3>
+          <label class="toggle-option">
             <div>
-              <div style="font-weight: 600; margin-bottom: 0.25rem;">Top 3 Leaderboard Only</div>
-              <p style="font-size: 0.875rem; color: var(--text-secondary);">
+              <div class="option-title">Top 3 Leaderboard Only</div>
+              <p class="option-description">
                 Disable to show the complete leaderboard for all players at the end of the game
               </p>
             </div>
             <input
               type="checkbox"
               v-model="settings.top3Only"
-              style="width: 48px; height: 28px; cursor: pointer;"
+              class="toggle-checkbox"
             />
           </label>
         </div>
@@ -201,8 +197,7 @@
         <!-- Save Button -->
         <button
           @click="saveSettings"
-          class="btn btn-success w-full"
-          style="padding: 1.125rem; font-size: 1.125rem;"
+          class="btn btn-success w-full save-button"
         >
           💾 Save Settings
         </button>
@@ -416,12 +411,3 @@ function leaveLobby() {
   }
 }
 </script>
-
-<style scoped>
-/* Checkbox styling for better appearance */
-input[type="checkbox"] {
-  width: auto;
-  min-width: 20px;
-  min-height: 20px;
-}
-</style>

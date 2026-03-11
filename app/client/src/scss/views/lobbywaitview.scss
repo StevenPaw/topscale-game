@@ -1,0 +1,352 @@
+.lobby-wait-view {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  .lobby-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .settings-button {
+      background: var(--bg-secondary);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .icon {
+        font-size: 1.25rem;
+      }
+    }
+  }
+
+  .lobby-code-card {
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
+
+    .code-label {
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .code-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .code-text {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 0.15em;
+      }
+
+      .copy-button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+
+        .icon {
+          font-size: 1.5rem;
+        }
+      }
+    }
+
+    .qr-section {
+      margin: 1.5rem 0;
+
+      .qr-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      canvas {
+        max-width: 200px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+        border-radius: 0.5rem;
+        background: white;
+        padding: 1rem;
+      }
+    }
+  }
+
+  .players-card {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    .players-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .player-count-badge {
+        background: var(--bg-secondary);
+        padding: 0.375rem 0.875rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+    }
+
+    .players-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .player-item {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 0.75rem;
+        background: var(--bg-secondary);
+        border-radius: 0.75rem;
+
+        .player-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: var(--primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 600;
+          flex-shrink: 0;
+        }
+
+        .player-info {
+          flex: 1;
+
+          .player-name {
+            font-weight: 600;
+          }
+        }
+
+        .host-badge {
+          background: var(--success);
+          color: white;
+          padding: 0.25rem 0.625rem;
+          border-radius: 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .start-game-button {
+    padding: 1.125rem;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .min-players-warning {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  /* Settings Modal */
+  .settings-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem 1rem;
+    overflow-y: auto;
+
+    .modal-content {
+      max-width: 500px;
+      width: 100%;
+      margin-top: 2rem;
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+
+        .back-button {
+          background: transparent;
+          border: none;
+          color: var(--text-primary);
+          cursor: pointer;
+          font-size: 1.5rem;
+          padding: 0.25rem;
+          margin-right: 0.75rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+          font-weight: 600;
+        }
+      }
+
+      .settings-section {
+        margin-bottom: 2rem;
+
+        h3 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin-bottom: 1rem;
+        }
+
+        .loading-packs {
+          text-align: center;
+          padding: 2rem;
+          color: var(--text-secondary);
+
+          .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+
+          .loading-text {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+          }
+        }
+
+        .question-packs {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+
+          .pack-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            cursor: pointer;
+
+            input[type="checkbox"] {
+              width: 20px;
+              height: 20px;
+              accent-color: var(--primary);
+              cursor: pointer;
+            }
+
+            .pack-info {
+              flex: 1;
+
+              .pack-title {
+                font-weight: 500;
+              }
+
+              .pack-count {
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                margin-top: 0.25rem;
+              }
+            }
+          }
+
+          .no-packs-warning {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+          }
+        }
+
+        .setting-field {
+          margin-bottom: 1.5rem;
+
+          label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+          }
+
+          input {
+            background: var(--bg-secondary);
+          }
+
+          .field-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+          }
+        }
+
+        .leaderboard-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem;
+          background: rgba(20, 184, 166, 0.1);
+          border-radius: 0.75rem;
+
+          .toggle-info {
+            .toggle-title {
+              font-weight: 600;
+              margin-bottom: 0.25rem;
+            }
+
+            .toggle-description {
+              font-size: 0.875rem;
+              color: var(--text-secondary);
+            }
+          }
+
+          input[type="checkbox"] {
+            width: 48px;
+            height: 28px;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .save-button {
+        padding: 1.125rem;
+        font-size: 1.125rem;
+      }
+    }
+  }
+
+  /* Checkbox styling for better appearance */
+  input[type="checkbox"] {
+    width: auto;
+    min-width: 20px;
+    min-height: 20px;
+  }
+}

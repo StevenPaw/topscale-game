@@ -1,0 +1,38 @@
+.game-lobby-view {
+    min-height: 100vh;
+    background: var(--bg-primary);
+
+    .loading-state {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        .loading-spinner {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+    }
+
+    .unknown-phase {
+        padding: 2rem;
+        text-align: center;
+
+        .unknown-phase-hint {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+    }
+}
