@@ -27,7 +27,7 @@ export default defineConfig(({ command }) => {
         base: './',
         publicDir: 'app/client/public',
         build: {
-        // cssCodeSplit: false,
+        cssCodeSplit: false, // Bundle all CSS into one file
         outDir: './app/client/dist',
         manifest: true,
         sourcemap: true,

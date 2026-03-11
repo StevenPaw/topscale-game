@@ -7,4 +7,5 @@ After:
 SilverStripe\Control\Director:
   rules:
     "api/game//$Action": 'App\Controllers\GameAPIController'
+    "//$Action": 'App\Controllers\GameController'
     "game//$Action": 'App\Controllers\GameController'
