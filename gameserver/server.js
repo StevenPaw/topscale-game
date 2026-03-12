@@ -38,15 +38,31 @@ async function fetchRandomQuestion(groupIds, excludeIds = []) {
     const excludeParam = excludeIds.length > 0 ? `&exclude=${excludeIds.join(',')}` : ''
     const url = `${API_URL}/game/questions/random?groupIds=${groupIds.join(',')}${excludeParam}`
 
+    console.log(`🔍 Fetching question from API: ${url}`)
     const response = await apiClient.get(url)
+
+    console.log(`📡 API Response:`, {
+      status: response.status,
+      success: response.data?.success,
+      hasQuestion: !!response.data?.question,
+      questionId: response.data?.question?.id,
+      questionText: response.data?.question?.text?.substring(0, 50)
+    })
 
     if (response.data.success && response.data.question) {
       return response.data.question
     }
 
+    console.warn('⚠️ API returned no question')
     return null
   } catch (error) {
-    console.error('❌ Error fetching question from API:', error.message)
+    console.error('❌ Error fetching question from API:')
+    console.error('   Message:', error.message)
+    console.error('   URL:', `${API_URL}/game/questions/random?groupIds=${groupIds.join(',')}`)
+    if (error.response) {
+      console.error('   Status:', error.response.status)
+      console.error('   Data:', error.response.data)
+    }
     return null
   }
 }
