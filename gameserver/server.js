@@ -25,16 +25,30 @@ const players = new Map()
 // API Configuration
 const API_URL = process.env.SILVERSTRIPE_API_URL || 'https://topscale-game.ddev.site/api'
 
-// Extract hostname from API_URL for SNI
-const apiHostname = new URL(API_URL).hostname
+// Parse API URL
+let apiHostname = 'localhost'
+try {
+  const parsedUrl = new URL(API_URL)
+  apiHostname = parsedUrl.hostname
+  console.log(`🔧 API Hostname extracted: ${apiHostname}`)
+} catch (error) {
+  console.error('❌ Failed to parse API_URL:', error.message)
+}
 
 // Create axios instance with custom config for development
 const apiClient = axios.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: process.env.NODE_ENV === 'production', // Only verify SSL in production
-    servername: apiHostname // Fix for SSL SNI issues
-  })
+    servername: apiHostname, // Fix for SSL SNI issues
+    keepAlive: true
+  }),
+  timeout: 10000,
+  headers: {
+    'User-Agent': 'TopScale-GameServer/1.0'
+  }
 })
+
+console.log(`🔧 Axios client configured with servername: ${apiHostname}`)
 
 // Helper: Fetch random question from API
 async function fetchRandomQuestion(groupIds, excludeIds = []) {
@@ -700,8 +714,12 @@ function endGame(lobby) {
 // Start server
 const PORT = process.env.PORT || 3000
 httpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Quiz Game WebSocket Server running on port ${PORT}`)
+  console.log('═══════════════════════════════════════════════')
+  console.log(`🚀 Quiz Game WebSocket Server v1.1`)
+  console.log(`   Port: ${PORT}`)
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`)
   console.log(`   API URL: ${API_URL}`)
+  console.log(`   API Hostname (SNI): ${apiHostname}`)
   console.log(`   SSL Verification: ${process.env.NODE_ENV === 'production' ? 'Enabled' : 'Disabled (dev mode)'}`)
+  console.log('═══════════════════════════════════════════════')
 })
