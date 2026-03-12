@@ -25,10 +25,14 @@ const players = new Map()
 // API Configuration
 const API_URL = process.env.SILVERSTRIPE_API_URL || 'https://topscale-game.ddev.site/api'
 
+// Extract hostname from API_URL for SNI
+const apiHostname = new URL(API_URL).hostname
+
 // Create axios instance with custom config for development
 const apiClient = axios.create({
   httpsAgent: new https.Agent({
-    rejectUnauthorized: process.env.NODE_ENV === 'production' // Only verify SSL in production
+    rejectUnauthorized: process.env.NODE_ENV === 'production', // Only verify SSL in production
+    servername: apiHostname // Fix for SSL SNI issues
   })
 })
 
