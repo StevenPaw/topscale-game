@@ -449,18 +449,32 @@ io.on('connection', (socket) => {
       }
     }
 
-    // Move to next round after short delay (to show results)
-    setTimeout(async () => {
-      lobby.currentRound++
+    // No automatic round start - moderator must click "Next Round" button
+    console.log(`⏸️ Waiting for moderator to start next round in lobby ${playerData.lobbyCode}`)
+  })
 
-      if (lobby.currentRound > lobby.settings.totalRounds) {
-        endGame(lobby)
-      } else {
-        // Start next round immediately - no navigation needed with new architecture
-        console.log(`⏭️ Moving to Round ${lobby.currentRound} in lobby ${lobby.code}`)
-        await startRound(lobby)
-      }
-    }, 3000) // 3 seconds to view results
+  // Start Next Round (moderator only)
+  socket.on('round:start-next', async () => {
+    const playerData = players.get(socket.id)
+    if (!playerData) return
+
+    const lobby = lobbies.get(playerData.lobbyCode)
+    if (!lobby) return
+
+    // Only allow if game is in results phase
+    if (lobby.phase !== 'results') {
+      console.warn(`⚠️ Cannot start next round: lobby not in results phase (current: ${lobby.phase})`)
+      return
+    }
+
+    lobby.currentRound++
+
+    if (lobby.currentRound > lobby.settings.totalRounds) {
+      endGame(lobby)
+    } else {
+      console.log(`⏭️ Moderator starting Round ${lobby.currentRound} in lobby ${lobby.code}`)
+      await startRound(lobby)
+    }
   })
 
   // Restart Game (host only)

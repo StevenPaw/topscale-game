@@ -66,10 +66,33 @@ onMounted(async () => {
     return
   }
 
+  // Check if user has a username, if not redirect to home
+  if (!userStore.username) {
+    console.log('⚠️ No username set, redirecting to home')
+    router.push('/')
+    return
+  }
+
   // Connect to socket if not already connected
   if (!socketStore.isConnected) {
     loadingMessage.value = 'Connecting to server...'
     await socketStore.connect()
+    
+    // Wait for connection to be established
+    let attempts = 0
+    while (!socketStore.isConnected && attempts < 50) {
+      await new Promise(resolve => setTimeout(resolve, 100))
+      attempts++
+    }
+    
+    if (!socketStore.isConnected) {
+      console.error('❌ Failed to connect to server')
+      router.push('/')
+      return
+    }
+    
+    // Give socket listeners time to register
+    await new Promise(resolve => setTimeout(resolve, 200))
   }
 
   // Setup global socket listeners for phase changes
@@ -77,10 +100,36 @@ onMounted(async () => {
 
   // Check if user has joined this lobby or needs to join
   if (lobbyStore.lobbyCode !== lobbyCode.value) {
-    // Need to join/create this lobby
+    // Automatically join the lobby
     loadingMessage.value = 'Joining lobby...'
-    // The joining logic is handled by the views themselves for now
-    // This will be refactored when we implement lobby:state-sync
+    console.log('🔗 Auto-joining lobby:', lobbyCode.value, 'as:', userStore.username)
+    
+    // Setup one-time listener for successful join
+    const onJoined = (data) => {
+      console.log('✅ Successfully joined lobby:', data)
+      lobbyStore.setLobbyCode(data.code)
+      lobbyStore.players = data.players || []
+      lobbyStore.spectators = data.spectators || []
+      if (data.settings) {
+        lobbyStore.updateSettings(data.settings)
+      }
+      socketStore.socket.off('lobby:joined', onJoined)
+    }
+    
+    const onError = (data) => {
+      console.error('❌ Failed to join lobby:', data)
+      alert(data.message || 'Failed to join lobby')
+      router.push('/')
+      socketStore.socket.off('lobby:error', onError)
+    }
+    
+    socketStore.socket.on('lobby:joined', onJoined)
+    socketStore.socket.on('lobby:error', onError)
+    
+    socketStore.joinLobby(lobbyCode.value, userStore.username, false)
+    
+    // Wait for join to complete
+    await new Promise(resolve => setTimeout(resolve, 1000))
   }
 
   loading.value = false

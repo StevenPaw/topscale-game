@@ -7,6 +7,16 @@
 
       <!-- Username Input -->
       <div v-if="!userStore.username" class="mb-6">
+        <!-- Show hint if join code is present -->
+        <div v-if="joinCode" class="mb-4 join-hint">
+          <p class="text-center">
+            🎮 You're joining lobby: <strong>{{ joinCode }}</strong>
+          </p>
+          <p class="text-center text-sm">
+            Please enter your name to continue
+          </p>
+        </div>
+        
         <label class="label">Enter your name to start:</label>
         <input
           v-model="tempUsername"
@@ -21,7 +31,7 @@
           class="btn btn-primary w-full"
           :disabled="!tempUsername.trim()"
         >
-          Continue
+          {{ joinCode ? 'Join Lobby' : 'Continue' }}
         </button>
       </div>
 
@@ -106,13 +116,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { useSocketStore } from '../stores/socket'
 import { useLobbyStore } from '../stores/lobby'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
 const socketStore = useSocketStore()
 const lobbyStore = useLobbyStore()
@@ -124,9 +135,31 @@ const joinCode = ref('')
 const isCreating = ref(false)
 const isJoining = ref(false)
 
+onMounted(() => {
+  // Check if there's a join code in the query parameter
+  if (route.query.join) {
+    joinCode.value = route.query.join.toUpperCase()
+    
+    // If user already has a username, auto-join
+    if (userStore.username) {
+      console.log('🔗 Auto-joining lobby from URL:', joinCode.value)
+      router.push(`/${joinCode.value}`)
+    } else {
+      // Show the join hint
+      console.log('💡 Join code detected, waiting for username:', joinCode.value)
+    }
+  }
+})
+
 function saveUsername() {
   if (tempUsername.value.trim()) {
     userStore.setUsername(tempUsername.value.trim())
+    
+    // If there's a join code from URL, auto-join
+    if (joinCode.value) {
+      console.log('✅ Username set, auto-joining:', joinCode.value)
+      router.push(`/${joinCode.value}`)
+    }
   }
 }
 

@@ -292,11 +292,9 @@ async function loadQuestionPacks() {
 }
 
 onMounted(async () => {
-  if (!socketStore.isConnected) {
-    router.push('/')
-    return
-  }
-
+  // No redirect here - let GameLobbyView handle connection
+  // We assume if we're here, the socket is connected or will be soon
+  
   // Load question packs from API
   await loadQuestionPacks()
 

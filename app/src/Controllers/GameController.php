@@ -13,7 +13,12 @@ use SilverStripe\Control\HTTPRequest;
 class GameController extends Controller
 {
     private static $allowed_actions = [
-        'index'
+        'index',
+        'handleRoute' => true
+    ];
+
+    private static $url_handlers = [
+        '$Action' => 'handleRoute'
     ];
 
     /**
@@ -21,6 +26,15 @@ class GameController extends Controller
      */
     public function index(HTTPRequest $request)
     {
+        return $this->renderWith(['GameController', 'Page']);
+    }
+
+    /**
+     * Handle all sub-routes and redirect to Vue.js SPA
+     */
+    public function handleRoute(HTTPRequest $request)
+    {
+        // Let Vue.js handle the routing
         return $this->renderWith(['GameController', 'Page']);
     }
 

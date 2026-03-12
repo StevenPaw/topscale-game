@@ -126,6 +126,37 @@
         </p>
       </div>
 
+      <!-- Next Round Button (Moderator Only) -->
+      <button
+        v-if="isModerator && !isLastRound"
+        @click="startNextRound"
+        class="btn btn-success w-full next-round-button"
+      >
+        ▶️ Start Next Round
+      </button>
+
+      <!-- End Game Button (Moderator Only, Last Round) -->
+      <button
+        v-if="isModerator && isLastRound"
+        @click="startNextRound"
+        class="btn btn-primary w-full next-round-button"
+      >
+        🏆 View Final Scoreboard
+      </button>
+
+      <!-- Waiting Message for Non-Moderators -->
+      <div v-if="!isModerator" class="card waiting-next-round-card">
+        <div class="waiting-icon">⏳</div>
+        <p class="waiting-text">
+          <template v-if="!isLastRound">
+            Waiting for moderator to start the next round...
+          </template>
+          <template v-else>
+            Waiting for moderator to show the final scoreboard...
+          </template>
+        </p>
+      </div>
+
       <!-- Answers with Scale Values Revealed -->
       <div class="revealed-answers-list">
         <div
@@ -318,14 +349,15 @@ onMounted(() => {
     resultsReceived.value = true
     results.value = data
 
-    // Navigate to next round or scoreboard after delay
-    setTimeout(() => {
-      console.log('⏭️ Results complete, waiting for next phase change...')
-      // Phase will autocratically change to 'question' (next round) or 'podium' (game end)
-      // No router.push needed - GameLobbyView handles this
-    }, 5000)
+    // No automatic navigation - moderator controls when to continue
+    console.log('📊 Results received, waiting for moderator to start next round')
   })
 })
+
+function startNextRound() {
+  console.log('⏭️ Moderator starting next round/ending game')
+  socketStore.socket?.emit('round:start-next')
+}
 
 onUnmounted(() => {
   socketStore.socket?.off('round:results')

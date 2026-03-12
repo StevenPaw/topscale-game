@@ -95,6 +95,9 @@ export const useSocketStore = defineStore('socket', () => {
       lobbyStore.setLobbyCode(data.code)
       lobbyStore.players = data.players || []
       lobbyStore.spectators = data.spectators || []
+      if (data.settings) {
+        lobbyStore.updateSettings(data.settings)
+      }
     })
 
     socket.value.on('lobby:player-joined', (player) => {
