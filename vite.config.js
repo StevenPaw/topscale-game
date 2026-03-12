@@ -27,18 +27,17 @@ export default defineConfig(({ command }) => {
         base: './',
         publicDir: 'app/client/public',
         build: {
-        cssCodeSplit: false, // Bundle all CSS into one file
-        outDir: './app/client/dist',
-        manifest: true,
-        sourcemap: true,
-        rollupOptions: {
-            input: {
-            'main.js': './app/client/src/js/main.js',
-            'main.scss': './app/client/src/scss/main.scss',
-            'editor.scss': './app/client/src/scss/editor.scss',
-            'vue-app': './app/client/src/vue/main.js',
+            // cssCodeSplit: false, // Bundle all CSS into one file
+            outDir: './app/client/dist',
+            manifest: true,
+            sourcemap: true,
+            rollupOptions: {
+                input: {
+                    'main.js': './app/client/src/js/main.js',
+                    'main.scss': './app/client/src/scss/main.scss',
+                    'editor.scss': './app/client/src/scss/editor.scss',
+                },
             },
-        },
         },
         css: {
             devSourcemap: true,

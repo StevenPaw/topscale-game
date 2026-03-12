@@ -32,11 +32,6 @@ const apiClient = axios.create({
   })
 })
 
-console.log(`🚀 Quiz Game WebSocket Server running on port ${process.env.PORT || 3000}`)
-console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`)
-console.log(`   API URL: ${API_URL}`)
-console.log(`   SSL Verification: ${process.env.NODE_ENV === 'production' ? 'Enabled' : 'Disabled (dev mode)'}`)
-
 // Helper: Fetch random question from API
 async function fetchRandomQuestion(groupIds, excludeIds = []) {
   try {
@@ -673,5 +668,6 @@ const PORT = process.env.PORT || 3000
 httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Quiz Game WebSocket Server running on port ${PORT}`)
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`)
-  console.log(`   API URL: ${process.env.SILVERSTRIPE_API_URL || 'not set'}`)
+  console.log(`   API URL: ${API_URL}`)
+  console.log(`   SSL Verification: ${process.env.NODE_ENV === 'production' ? 'Enabled' : 'Disabled (dev mode)'}`)
 })

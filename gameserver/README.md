@@ -17,7 +17,7 @@ ddev logs -s websocket
 ddev restart websocket
 ```
 
-The server runs on `http://localhost:3000` and is accessible via `ws://localhost:3000`.
+The server runs on `http://localhost:1337` and is accessible via `ws://localhost:1337`.
 
 ## Development (Manual)
 
@@ -72,7 +72,7 @@ See `.env.example` for all configuration options.
 
 Required variables:
 - `NODE_ENV` - Environment (development/production)
-- `PORT` - Server port (default: 3000)
+- `PORT` - Server port (default: 1337)
 - `SILVERSTRIPE_API_URL` - SilverStripe API endpoint
 - `ALLOWED_ORIGINS` - CORS allowed origins
 
@@ -132,7 +132,7 @@ SilverStripe API (Questions, Stats)
 ```bash
 # Test with wscat
 npm install -g wscat
-wscat -c ws://localhost:3000
+wscat -c ws://localhost:1337
 ```
 
 ## Logs

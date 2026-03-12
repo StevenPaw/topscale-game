@@ -91,7 +91,7 @@ onMounted(() => {
   // Listen for successful join
   socketStore.socket?.on('lobby:joined', (data) => {
     isJoining.value = false
-    router.push(`/lobby/${lobbyCode.value}`)
+    router.push(`/${lobbyCode.value}`)
   })
 
   socketStore.socket?.on('lobby:error', (data) => {

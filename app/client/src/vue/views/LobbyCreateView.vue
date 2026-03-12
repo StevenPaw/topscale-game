@@ -67,8 +67,8 @@ onMounted(() => {
   // Listen for successful creation
   socketStore.socket?.on('lobby:created', (data) => {
     isCreating.value = false
-    console.log('Lobby created, redirecting to:', `/lobby/${data.code}`)
-    router.push(`/lobby/${data.code}`)
+    console.log('Lobby created, redirecting to:', `/${data.code}`)
+    router.push(`/${data.code}`)
   })
 
   socketStore.socket?.on('lobby:error', (data) => {

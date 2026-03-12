@@ -8,7 +8,7 @@ services:
     command: sh -c "npm install && npm run dev"
     environment:
       - NODE_ENV=development
-      - PORT=3000
+      - PORT=1337
       - SILVERSTRIPE_API_URL=https://${DDEV_HOSTNAME}/api
       - ALLOWED_ORIGINS=https://${DDEV_HOSTNAME},http://localhost:5173
       - DB_HOST=db
@@ -20,7 +20,7 @@ services:
       - ../gameserver:/var/www/html/gameserver
       - websocket_node_modules:/var/www/html/gameserver/node_modules
     ports:
-      - "3000:3000"
+      - "1337:1337"
     labels:
       com.ddev.site-name: ${DDEV_SITENAME}
       com.ddev.approot: $DDEV_APPROOT

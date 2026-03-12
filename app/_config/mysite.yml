@@ -17,6 +17,9 @@ SilverStripe\ORM\Connect\MySQLDatabase:
 
 Atwx\ViteHelper\Helper\ViteHelper:
   editor_css: "app/client/src/scss/editor.scss"
+  dev_server_url: "https://topscale-game.ddev.site:5173"
+  manifest_path: "/app/client/dist/.vite/manifest.json"
+  output_url: "/app/client/dist/"
 
 SilverStripe\Core\Injector\Injector:
   DataListFilter.FulltextBoolean:

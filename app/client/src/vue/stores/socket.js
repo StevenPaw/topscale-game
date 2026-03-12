@@ -15,7 +15,7 @@ export const useSocketStore = defineStore('socket', () => {
   function getSocketUrl() {
     if (import.meta.env.DEV) {
       // DDEV Development
-      return 'http://localhost:3000'
+      return 'http://localhost:1337'
     } else {
       // Production - Nginx proxies /socket.io/ to WebSocket server
       return `https://${window.location.host}`

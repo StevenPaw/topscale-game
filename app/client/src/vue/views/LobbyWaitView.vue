@@ -345,7 +345,7 @@ async function generateQRCode() {
   if (!qrCanvas.value) return
 
   const lobbyCode = lobbyStore.lobbyCode || route.params.code
-  const joinUrl = `${window.location.origin}/lobby/join?code=${lobbyCode}`
+  const joinUrl = `${window.location.origin}/game/${lobbyCode}`
 
   try {
     await QRCode.toCanvas(qrCanvas.value, joinUrl, {
