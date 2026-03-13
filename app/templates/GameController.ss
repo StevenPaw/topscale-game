@@ -11,10 +11,10 @@
     <script type="module" src="$Vite('app/client/src/js/main.js')"></script>
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="120x120" href="_resources/app/client/icons/apple_touch_icon_120.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="_resources/app/client/icons/apple_touch_icon_180.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="_resources/app/client/icons/favicon_32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="_resources/app/client/icons/favicon_16.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="../_resources/app/client/icons/apple_touch_icon_120.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../_resources/app/client/icons/apple_touch_icon_180.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../_resources/app/client/icons/favicon_32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../_resources/app/client/icons/favicon_16.png" />
 </head>
 <body>
     <div id="app"></div>
