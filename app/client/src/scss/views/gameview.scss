@@ -1,14 +1,13 @@
 .game-view {
     max-width: 500px;
     margin: 0 auto;
-    padding: 2rem 1rem;
     min-height: 100vh;
 
     .game-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
+        margin-top: 2rem;
 
         .status-indicator {
             display: flex;
@@ -19,7 +18,7 @@
                 width: 8px;
                 height: 8px;
                 border-radius: 50%;
-                background: var(--success);
+                background: var(--ColorCorrect);
             }
 
             .status-text {
@@ -112,61 +111,56 @@
         }
     }
 
-    .player-view {
-        .scale-display {
-            text-align: center;
-            margin-bottom: 3rem;
+    .scale-display {
+        text-align: center;
+        margin-bottom: 3rem;
 
-            .scale-number {
-                font-size: 8rem;
-                font-weight: 700;
-                color: var(--primary);
-                line-height: 1;
-            }
-
-            .scale-label {
-                font-size: 0.875rem;
-                color: var(--text-secondary);
-                margin-top: 0.5rem;
-            }
+        .scale-number {
+            font-size: 120px;
+            font-weight: 700;
+            color: var(--ColorPrimary);
+            line-height: 1;
         }
 
-        .answer-input {
-            textarea {
-                margin-bottom: 1rem;
-                resize: vertical;
-                min-height: 100px;
-            }
+        .scale-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+    }
 
-            .submit-button {
-                padding: 1.125rem;
-                font-size: 1.125rem;
+    .answer-input {
+        display: flex;
+        flex-direction: column;
 
-                .submit-icon {
-                    margin-left: 0.5rem;
-                }
-            }
+        input[type="text"], textarea {
+            padding: 1rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+            min-height: 20px;
+            border-radius: 10px;
+        }
+    }
+
+    .answer-submitted {
+        padding: 2rem;
+        text-align: center;
+        background: rgba(16, 185, 129, 0.1);
+
+        .submit-icon-large {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
-        .answer-submitted {
-            padding: 2rem;
-            text-align: center;
-            background: rgba(16, 185, 129, 0.1);
+        .submit-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
 
-            .submit-icon-large {
-                font-size: 2rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .submit-title {
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-            }
-
-            .submit-message {
-                font-size: 0.875rem;
-                color: var(--text-secondary);
-            }
+        .submit-message {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
     }
 

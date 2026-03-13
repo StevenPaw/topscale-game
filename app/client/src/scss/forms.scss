@@ -4,6 +4,14 @@ form {
     //background-color: red;
 }
 
+input {
+    background-color: var(--ColorPrimaryDark);
+    border: 1px solid var(--ColorPrimaryLight);
+    color: var(--ColorWhite);
+    border-radius: 10px;
+    padding: 12px 15px;
+}
+
 
 //LOGIN FORM
 form#MemberLoginForm_LoginForm{

@@ -1,23 +1,52 @@
 // App.vue styles
-.header {
-  background: var(--primary);
-  color: white;
-  padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
+.main {
+    width: 100dvw;
+    height: 100dvh;
+    margin: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--ColorBackground);
+    overflow-y: scroll;
 }
 
-.main {
-  padding: 2rem 0;
-  min-height: calc(100vh - 80px);
+.card {
+    background-color: var(--ColorPrimaryDark);
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    &.modal-card {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+    }
+}
+
+.btn, button {
+    background-color: var(--ColorPrimary);
+    border: 1px solid var(--ColorPrimaryLight);
+    padding: 8px 10px;
+    border-radius: 5px;
+    color: var(--ColorWhite);
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: var(--ColorPrimaryDark);
+    }
+}
+
+.view {
+    padding: 10px;
 }
 
 @media (min-width: 768px) {
-  .header h1 {
-    font-size: 2rem;
-  }
+    .header h1 {
+        font-size: 2rem;
+    }
 }

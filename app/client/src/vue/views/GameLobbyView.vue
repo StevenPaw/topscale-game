@@ -1,36 +1,72 @@
 <template>
-  <div class="game-lobby-view">
-    <!-- Loading state -->
-    <div v-if="!lobbyCode || loading" class="loading-state">
-      <div>
-        <div class="loading-spinner"></div>
-        <p class="loading-text">{{ loadingMessage }}</p>
-      </div>
+    <div class="view game-lobby-view">
+        <!-- Loading state -->
+        <div v-if="!lobbyCode || loading" class="loading-state">
+            <div>
+                <div class="loading-spinner"></div>
+                <p class="loading-text">{{ loadingMessage }}</p>
+            </div>
+        </div>
+
+        <!-- Main content - Phase-based rendering using existing views -->
+        <div v-else>
+            <AppHeader HeaderTitle="Game Lobby">
+                <template #actions>
+                    <button
+                    @click="leaveLobby"
+                    class="btn btn-secondary leave-button"
+                    >
+                    🚪
+                    </button>
+                    <div class="code-display"
+                        @click="copyLobbyCode">
+                        <div class="code-text">
+                            Lobby {{ lobbyStore.lobbyCode || route.params.code }}
+                        </div>
+                    </div>
+                    <button
+                        v-if="lobbyStore.isHost"
+                        @click="showSettings = true"
+                        class="settings-button"
+                    >
+                        ⚙️
+                    </button>
+                </template>
+            </AppHeader>
+
+            <!-- Lobby/Waiting Phase -->
+            <LobbyWaitView v-if="gameStore.phase === 'lobby'"
+
+            />
+
+            <!-- Question/Answer Phase -->
+            <GameView v-else-if="gameStore.phase === 'question'" />
+
+            <!-- Sorting/Results Phase -->
+            <RoundResultsView v-else-if="gameStore.phase === 'sorting' || gameStore.phase === 'results'" />
+
+            <!-- Podium/Final Scoreboard Phase -->
+            <ScoreboardView v-else-if="gameStore.phase === 'podium'" />
+
+            <!-- Unknown phase fallback -->
+            <div v-else class="unknown-phase">
+                <p>Unknown phase: {{ gameStore.phase }}</p>
+                <p class="unknown-phase-hint">
+                This might indicate a synchronization issue. Try refreshing the page.
+                </p>
+            </div>
+
+            <AppFooter
+                :joinCode="joinCode"
+                @handleNameSaved="handleNameSaved"
+            />
+
+            <!-- Lobby Settings Modal -->
+            <LobbySettings
+                v-model:showSettings="showSettings"
+            />
+        </div>
     </div>
-
-    <!-- Main content - Phase-based rendering using existing views -->
-    <div v-else>
-      <!-- Lobby/Waiting Phase -->
-      <LobbyWaitView v-if="gameStore.phase === 'lobby'" />
-
-      <!-- Question/Answer Phase -->
-      <GameView v-else-if="gameStore.phase === 'question'" />
-
-      <!-- Sorting/Results Phase -->
-      <RoundResultsView v-else-if="gameStore.phase === 'sorting' || gameStore.phase === 'results'" />
-
-      <!-- Podium/Final Scoreboard Phase -->
-      <ScoreboardView v-else-if="gameStore.phase === 'podium'" />
-
-      <!-- Unknown phase fallback -->
-      <div v-else class="unknown-phase">
-        <p>Unknown phase: {{ gameStore.phase }}</p>
-        <p class="unknown-phase-hint">
-          This might indicate a synchronization issue. Try refreshing the page.
-        </p>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup>
@@ -40,6 +76,9 @@ import { useGameStore } from '../stores/game'
 import { useLobbyStore } from '../stores/lobby'
 import { useSocketStore } from '../stores/socket'
 import { useUserStore } from '../stores/user'
+import AppHeader from '../components/AppHeader.vue'
+import AppFooter from '../components/AppFooter.vue'
+import LobbySettings from '../components/LobbySettings.vue'
 
 // Existing views (now used as phase components)
 import LobbyWaitView from './LobbyWaitView.vue'
@@ -57,6 +96,7 @@ const userStore = useUserStore()
 const loading = ref(true)
 const loadingMessage = ref('Connecting to lobby...')
 const lobbyCode = computed(() => route.params.code?.toUpperCase())
+const showSettings = ref(false)
 
 onMounted(async () => {
   console.log('🎮 GameLobbyView mounted for lobby:', lobbyCode.value)
@@ -77,20 +117,20 @@ onMounted(async () => {
   if (!socketStore.isConnected) {
     loadingMessage.value = 'Connecting to server...'
     await socketStore.connect()
-    
+
     // Wait for connection to be established
     let attempts = 0
     while (!socketStore.isConnected && attempts < 50) {
       await new Promise(resolve => setTimeout(resolve, 100))
       attempts++
     }
-    
+
     if (!socketStore.isConnected) {
       console.error('❌ Failed to connect to server')
       router.push('/')
       return
     }
-    
+
     // Give socket listeners time to register
     await new Promise(resolve => setTimeout(resolve, 200))
   }
@@ -103,7 +143,7 @@ onMounted(async () => {
     // Automatically join the lobby
     loadingMessage.value = 'Joining lobby...'
     console.log('🔗 Auto-joining lobby:', lobbyCode.value, 'as:', userStore.username)
-    
+
     // Setup one-time listener for successful join
     const onJoined = (data) => {
       console.log('✅ Successfully joined lobby:', data)
@@ -115,19 +155,19 @@ onMounted(async () => {
       }
       socketStore.socket.off('lobby:joined', onJoined)
     }
-    
+
     const onError = (data) => {
       console.error('❌ Failed to join lobby:', data)
       alert(data.message || 'Failed to join lobby')
       router.push('/')
       socketStore.socket.off('lobby:error', onError)
     }
-    
+
     socketStore.socket.on('lobby:joined', onJoined)
     socketStore.socket.on('lobby:error', onError)
-    
+
     socketStore.joinLobby(lobbyCode.value, userStore.username, false)
-    
+
     // Wait for join to complete
     await new Promise(resolve => setTimeout(resolve, 1000))
   }
@@ -193,5 +233,18 @@ function cleanupSocketListeners() {
   socketStore.socket?.off('round:started')
   socketStore.socket?.off('phase:changed')
   socketStore.socket?.off('lobby:state-sync')
+}
+
+function copyLobbyCode() {
+    const code = lobbyStore.lobbyCode || route.params.code
+    navigator.clipboard.writeText(code)
+    alert('Lobby code copied!')
+}
+
+function leaveLobby() {
+  if (confirm('Leave this lobby?')) {
+    socketStore.leaveLobby()
+    router.push('/')
+  }
 }
 </script>

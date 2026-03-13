@@ -1,0 +1,59 @@
+.modal-overlay.modal-overlay--settings {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.7);
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+
+    .settings-modal {
+        display: flex;
+        flex-direction: column;
+
+        .settings-title {
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid var(--ColorWhite);
+        }
+
+        .settings-section {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--ColorWhite);
+
+            &.settings-section--packs {
+                .pack-list {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                    gap: 10px;
+
+                    .pack-item {
+                        border: 1px solid var(--ColorPrimary);
+                        border-radius: 10px;
+                        padding: 10px;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        // Hide the checkbox
+                        .pack-checkbox {
+                            display: none;
+                        }
+
+                        // Style when checkbox is checked
+                        &:has(.pack-checkbox:checked) {
+                            background-color: var(--ColorPrimary);
+                            border-color: var(--ColorPrimary);
+                        }
+
+                        &:hover {
+                            opacity: 0.8;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

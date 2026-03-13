@@ -1,8 +1,5 @@
 // Vue Component Styles
 
-// Theme and base styles
-@use "vue-base.scss";
-
 // App component
 @use "app.scss";
 
@@ -18,6 +15,9 @@
 
 // Components
 @use "components/questioncard.scss";
+@use "components/namechanger.scss";
+@use "components/appheader.scss";
+@use "components/lobbysettings.scss";
 
 // Animations
 @keyframes spin {

@@ -1,0 +1,19 @@
+.header-card {
+    display: flex;
+    flex-direction: column;
+
+    .app-header_actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+
+        .code-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    }
+}

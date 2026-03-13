@@ -1,0 +1,22 @@
+.namechanger {
+    .card {
+
+        .namechanger-hint {
+            color: var(--ColorGray);
+            background-color: var(--ColorBackground);
+            opacity: 0.5;
+            padding: 8px 10px;
+            border-radius: 20px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            justify-content: stretch;
+
+            .btn {
+                flex: 1;
+            }
+        }
+    }
+}

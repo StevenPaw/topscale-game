@@ -1,17 +1,5 @@
 <template>
   <div class="game-view">
-    <!-- Game Status Header -->
-    <div class="game-header">
-      <div class="status-indicator">
-        <div class="status-dot"></div>
-        <span class="status-text">
-          Game Active
-        </span>
-      </div>
-      <span class="round-counter">
-        Round {{ currentRound }} of {{ totalRounds }}
-      </span>
-    </div>
 
     <!-- Question Card -->
     <QuestionCard v-if="currentQuestion" :question="currentQuestion" />
@@ -62,11 +50,11 @@
       </div>
 
       <!-- Answer Input -->
-      <div v-if="!answerSubmitted">
+      <div class="answer-input" v-if="!answerSubmitted">
         <textarea
           v-model="myAnswer"
           placeholder="E.g., It's pretty good, I'd..."
-          rows="3"
+          rows="1"
           class="answer-textarea"
         ></textarea>
 
@@ -75,8 +63,7 @@
           class="btn btn-success w-full submit-button"
           :disabled="!myAnswer.trim()"
         >
-          <span>Submit</span>
-          <span class="submit-icon">✓</span>
+          <span>Answer!</span>
         </button>
       </div>
 
@@ -95,6 +82,19 @@
       <div class="timer-value">
         {{ timeRemaining }}s
       </div>
+    </div>
+
+    <!-- Game Status Header -->
+    <div class="game-header">
+      <div class="status-indicator">
+        <div class="status-dot"></div>
+        <span class="status-text">
+          Game Active
+        </span>
+      </div>
+      <span class="round-counter">
+        Round {{ currentRound }} of {{ totalRounds }}
+      </span>
     </div>
   </div>
 </template>
