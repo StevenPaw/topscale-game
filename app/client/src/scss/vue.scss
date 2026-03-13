@@ -18,6 +18,9 @@
 @use "components/namechanger.scss";
 @use "components/appheader.scss";
 @use "components/lobbysettings.scss";
+@use "components/appfooter.scss";
+@use "components/errormessage.scss";
+@use "components/rankingitem.scss";
 
 // Animations
 @keyframes spin {

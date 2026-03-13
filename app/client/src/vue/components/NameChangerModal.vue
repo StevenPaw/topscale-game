@@ -1,18 +1,14 @@
 <template>
     <!-- Modal Overlay -->
-    <div v-if="modelValue" class="namechanger modal-overlay" @click="closeModal">
-        <div class="card modal-card" @click.stop>
-            <h3 class="">{{ isChangingName ? 'Change Your Name' : 'Welcome!' }}</h3>
+    <Teleport to="body">
+        <div v-if="modelValue" class="namechanger modal-overlay" @click="closeModal">
+            <div class="card modal-card" @click.stop>
+            <h3 class="card_title">{{ isChangingName ? 'Change Your Name' : 'Welcome!' }}</h3>
 
             <!-- Hint slot for contextual messages -->
             <div v-if="$slots.hint" class="namechanger-hint">
                 <slot name="hint"></slot>
             </div>
-
-            <!-- Default hint if no slot provided -->
-            <p v-else class="text-center name-hint">
-                👤 Your name will be visible to other players in the lobby.
-            </p>
 
             <div class="input-row">
                 <label class="label">Enter your name:</label>
@@ -25,7 +21,11 @@
                     @keyup.esc="closeModal"
                     ref="nameInput"
                     autofocus
+                    maxlength="20"
                 />
+                <p class="datasecurity-hint">
+                    Visible to other players in the lobby.
+                </p>
             </div>
 
             <div class="button-row">
@@ -46,6 +46,7 @@
             </div>
         </div>
     </div>
+    </Teleport>
 </template>
 
 <script setup>

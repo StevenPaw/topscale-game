@@ -1,7 +1,7 @@
 <template>
     <div class="card card--footer">
         <button
-            class="w-full login-button"
+            class="login-button"
             @click="showLoginModal = true"
         >
             Login / Register
@@ -9,40 +9,35 @@
 
         <button
             @click="showNameChanger = true"
-            class="mt-4 w-full change-name-button"
+            class="change-name-button"
             >
             Change Name
         </button>
 
         <!-- Name Changer Modal -->
-        <NameChanger
+        <NameChangerModal
             v-model="showNameChanger"
             :join-code="props.joinCode"
             @saved="handleNameSaved"
         >
-            <template #hint>
-                <div v-if="props.joinCode" class="mb-4 join-hint">
+            <template v-if="props.joinCode" #hint>
+                <div class="join-hint">
                     <p class="text-center">
                         You're joining lobby: <strong>{{ props.joinCode }}</strong>
                     </p>
                 </div>
             </template>
-        </NameChanger>
+        </NameChangerModal>
 
-        <!-- Login Modal (placeholder) -->
-        <div v-if="showLoginModal" class="modal-overlay" @click="showLoginModal = false">
-            <div class="card modal-card" @click.stop>
-                <h3 class="">Login / Register</h3>
-                <p class="modal-text">This feature will be implemented soon. For now, you can play without an account!</p>
-                <button class="btn btn-primary w-full" @click="showLoginModal = false">Close</button>
-            </div>
-        </div>
+        <!-- Login Modal -->
+        <LoginModal v-model="showLoginModal" />
     </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
-import NameChanger from './NameChanger.vue'
+import NameChangerModal from './NameChangerModal.vue'
+import LoginModal from './LoginModal.vue'
 
 // Props empfangen
 const props = defineProps({

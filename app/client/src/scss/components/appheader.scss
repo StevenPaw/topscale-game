@@ -3,17 +3,17 @@
     flex-direction: column;
 
     .app-header_actions {
-        display: flex;
+        display: grid;
         gap: 10px;
+        grid-template-columns: 40px 1fr 40px;
         align-items: center;
         justify-content: space-between;
+        text-align: center;
 
         .code-display {
-            display: flex;
-            align-items: center;
             gap: 0.5rem;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 15px;
         }
     }
 }

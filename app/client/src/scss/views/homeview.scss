@@ -1,5 +1,13 @@
 // HomeView styles
 .home-view {
+    .home-logo {
+        width: 100%;
+        max-width: 200px;
+        margin: 0 auto;
+        display: block;
+        margin-top: 30px;
+    }
+
   .home-card {
     max-width: 500px;
     margin: 2rem auto;
@@ -67,15 +75,7 @@
   }
 
   // Modals
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
+
 
   .modal-card {
     max-width: 400px;

@@ -127,33 +127,15 @@
                 Answers (sorted by correct ranking):
               </h4>
               <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <div
+                <RankingItem
                   v-for="(answer, index) in getSortedAnswers(item)"
                   :key="answer.id"
-                  style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--gray-50); border-radius: 0.5rem; border: 1px solid var(--gray-200);"
-                >
-                  <!-- Position Badge -->
-                  <div
-                    style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem; color: white; flex-shrink: 0;"
-                  >
-                    {{ index + 1 }}
-                  </div>
-
-                  <!-- Answer Content -->
-                  <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: 600; font-size: 0.75rem; color: var(--gray-600); margin-bottom: 0.125rem;">
-                      {{ answer.username }}
-                    </div>
-                    <div style="font-size: 0.875rem;">{{ answer.text }}</div>
-                  </div>
-
-                  <!-- Scale Value -->
-                  <div
-                    style="padding: 0.25rem 0.625rem; border-radius: 0.5rem; background: var(--primary); color: white; font-weight: 600; font-size: 0.875rem; flex-shrink: 0;"
-                  >
-                    {{ answer.scaleValue }}
-                  </div>
-                </div>
+                  variant="history"
+                  :rank="index + 1"
+                  :username="answer.username"
+                  :answer-text="answer.text"
+                  :actual-value="answer.scaleValue"
+                />
               </div>
             </div>
           </div>
@@ -170,6 +152,7 @@ import { useGameStore } from '../stores/game'
 import { useLobbyStore } from '../stores/lobby'
 import { useSocketStore } from '../stores/socket'
 import QuestionCard from '../components/QuestionCard.vue'
+import RankingItem from '../components/RankingItem.vue'
 
 const router = useRouter()
 const gameStore = useGameStore()

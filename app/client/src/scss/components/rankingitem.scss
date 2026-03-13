@@ -1,0 +1,170 @@
+.ranking-item {
+    display: flex;
+    border: 1px solid var(--ColorPrimary);
+    border-radius: 10px;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+
+    .rank-badge {
+        background-color: var(--ColorPrimary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .answer-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        position: relative;
+
+        .answer-username {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .answer-text {
+            font-size: 14px;
+        }
+
+        .actual-value-badge--inline {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.25rem 0.625rem;
+            border-radius: 0.5rem;
+            background: var(--ColorPrimary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+    }
+
+    .move-buttons {
+        display: flex;
+        gap: 5px;
+
+        .move-button {
+            background-color: var(--ColorPrimary);
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            color: var(--ColorWhite);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 0.75rem;
+
+            &:hover:not(:disabled) {
+                background-color: var(--ColorPrimaryDark);
+            }
+
+            &:disabled {
+                pointer-events: none;
+                opacity: 0.3;
+            }
+
+            .move-icon {
+                width: 16px;
+                height: 16px;
+                display: block;
+            }
+        }
+    }
+
+    // Detail variant styling
+    &--detail {
+        position: relative;
+        padding-left: 50px;
+
+        &.ranking-item--correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success, #10b981);
+        }
+
+        &.ranking-item--incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+
+        .status-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+
+            &.correct {
+                background: var(--success, #10b981);
+            }
+
+            &.incorrect {
+                background: #ef4444;
+            }
+        }
+
+        .answer-content {
+            position: relative;
+
+            .actual-value-badge {
+                position: absolute;
+                top: 0;
+                right: 0;
+                padding: 0.25rem 0.75rem;
+                border-radius: 1rem;
+                background: var(--ColorPrimary);
+                color: white;
+                font-weight: 600;
+                font-size: 0.875rem;
+            }
+
+            .position-info {
+                display: flex;
+                gap: 1rem;
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                margin-top: 8px;
+                flex-wrap: wrap;
+
+                .position-item {
+                    .position-label {
+                        font-weight: 400;
+                    }
+                }
+
+                .position-diff {
+                    color: #ef4444;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    // Live variant - same as base, no additional styling needed
+    &--live {
+        // Uses base styling
+    }
+
+    // Sortable variant - same as base, no additional styling needed
+    &--sortable {
+        // Uses base styling
+    }
+}

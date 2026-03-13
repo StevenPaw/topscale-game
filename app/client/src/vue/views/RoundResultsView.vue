@@ -1,278 +1,196 @@
 <template>
-  <div class="round-results-view">
+    <div class="round-results-view">
+        <!-- Moderator Ranking View -->
+        <div v-if="isModerator && !resultsSubmitted">
+            <!-- Question Card -->
+            <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
 
-    <!-- Moderator Ranking View -->
-    <div v-if="isModerator && !resultsSubmitted">
-      <!-- Question Card -->
-      <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
+            <!-- Sortable Answer List -->
+            <div class="card card--sortable-list">
+                <h2 class="view-title">
+                    Rank the Answers
+                </h2>
 
-      <h2 class="view-title">
-        Rank the Answers
-      </h2>
-      <p class="instructions">
-        <template v-if="gameStore.currentQuestion?.scaleFrom && gameStore.currentQuestion?.scaleTo">
-          Sort from <strong>{{ gameStore.currentQuestion.scaleFrom }}</strong> (lowest) to <strong>{{ gameStore.currentQuestion.scaleTo }}</strong> (highest)
-        </template>
-        <template v-else>
-          Sort from <strong>lowest</strong> (1) to <strong>highest</strong> (10) on the scale
-        </template>
-      </p>
-
-      <!-- Sortable Answer List -->
-      <div class="sortable-list">
-        <div
-          v-for="(answer, index) in sortedAnswers"
-          :key="answer.id"
-          class="card ranking-item"
-        >
-          <!-- Rank Number -->
-          <div class="rank-badge">
-            {{ index + 1 }}
-          </div>
-
-          <!-- Answer Text -->
-          <div class="answer-content">
-            <div class="answer-username">
-              {{ answer.username }}
-            </div>
-            <div class="answer-text">{{ answer.text }}</div>
-          </div>
-
-          <!-- Move Buttons -->
-          <div class="move-buttons">
-            <button
-              @click="moveUp(index)"
-              :disabled="index === 0"
-              class="move-button"
-              :class="{ disabled: index === 0 }"
-            >
-              ▲
-            </button>
-            <button
-              @click="moveDown(index)"
-              :disabled="index === sortedAnswers.length - 1"
-              class="move-button"
-              :class="{ disabled: index === sortedAnswers.length - 1 }"
-            >
-              ▼
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit Ranking Button -->
-      <button
-        @click="submitRanking"
-        class="btn btn-success w-full submit-ranking-button"
-      >
-        Submit Ranking
-      </button>
-    </div>
-
-    <!-- Waiting for Moderator (Non-Moderators) - With Live Updates -->
-    <div v-else-if="!resultsReceived">
-      <!-- Question Card for Non-Moderators -->
-      <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
-
-      <div class="card waiting-card">
-        <div class="waiting-icon">⏳</div>
-        <h3 class="waiting-title">Moderator is Ranking</h3>
-        <p class="waiting-message">
-          Watch as they sort the answers...
-        </p>
-      </div>
-
-      <!-- Live Ranking Preview (Non-Moderators see this) -->
-      <div v-if="liveRankingAnswers.length > 0" class="live-ranking-list">
-        <div
-          v-for="(answer, index) in liveRankingAnswers"
-          :key="answer.id"
-          class="card live-ranking-item"
-        >
-          <!-- Rank Number -->
-          <div class="rank-badge">
-            {{ index + 1 }}
-          </div>
-
-          <!-- Answer Text -->
-          <div class="answer-content">
-            <div class="answer-username">
-              {{ answer.username }}
-            </div>
-            <div class="answer-text">{{ answer.text }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div v-else class="spinner-container">
-        <div class="spinner"></div>
-      </div>
-    </div>
-
-    <!-- Results Display (After Moderator Submit) -->
-    <div v-else>
-      <!-- Question Card in Results -->
-      <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
-
-      <div class="results-header">
-        <div v-if="results.isCorrect" class="result-icon success">✅</div>
-        <div v-else class="result-icon error">❌</div>
-
-        <h2 class="result-title">
-          {{ results.isCorrect ? 'Perfect Ranking!' : 'Not Quite!' }}
-        </h2>
-        <p class="result-message">
-          {{ results.isCorrect ? 'Moderator got the ranking correct!' : 'Moderator\'s ranking was incorrect' }}
-        </p>
-      </div>
-
-      <!-- Next Round Button (Moderator Only) -->
-      <button
-        v-if="isModerator && !isLastRound"
-        @click="startNextRound"
-        class="btn btn-success w-full next-round-button"
-      >
-        ▶️ Start Next Round
-      </button>
-
-      <!-- End Game Button (Moderator Only, Last Round) -->
-      <button
-        v-if="isModerator && isLastRound"
-        @click="startNextRound"
-        class="btn btn-primary w-full next-round-button"
-      >
-        🏆 View Final Scoreboard
-      </button>
-
-      <!-- Waiting Message for Non-Moderators -->
-      <div v-if="!isModerator" class="card waiting-next-round-card">
-        <div class="waiting-icon">⏳</div>
-        <p class="waiting-text">
-          <template v-if="!isLastRound">
-            Waiting for moderator to start the next round...
-          </template>
-          <template v-else>
-            Waiting for moderator to show the final scoreboard...
-          </template>
-        </p>
-      </div>
-
-      <!-- Answers with Scale Values Revealed -->
-      <div class="revealed-answers-list">
-        <div
-          v-for="answer in results.answers"
-          :key="answer.id"
-          class="card revealed-answer-item"
-        >
-          <!-- Scale Number (Revealed) -->
-          <div class="scale-badge">
-            {{ answer.scaleValue }}
-          </div>
-
-          <!-- Answer -->
-          <div class="answer-content">
-            <div class="answer-username">
-              {{ answer.username }}
-            </div>
-            <div class="answer-text">{{ answer.text }}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Current Scores -->
-      <div class="card current-scores-card">
-        <h3 class="scores-title">Current Scores</h3>
-        <div class="scores-list">
-          <div
-            v-for="(score, playerId) in results.scores"
-            :key="playerId"
-            class="score-row"
-          >
-            <span class="player-name">{{ getPlayerName(playerId) }}</span>
-            <span class="score-value">{{ score }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ranking Analysis -->
-      <div class="card ranking-analysis-card">
-        <h3 class="analysis-title">
-          Ranking Details
-          <span v-if="results.isCorrect" class="status-badge success">✓ Perfect!</span>
-          <span v-else class="status-badge error">✗ Not quite right</span>
-        </h3>
-
-        <!-- Points Summary -->
-        <div
-          v-if="results.pointsEarned !== undefined"
-          class="card points-summary"
-        >
-          <div class="summary-label">
-            Moderator earned this round
-          </div>
-          <div class="points-earned">
-            {{ results.pointsEarned }} <span class="max-points">/ 100</span>
-          </div>
-          <div class="summary-details">
-            {{ results.correctlyPositioned }} of {{ results.totalAnswers }} correct
-            <span v-if="results.totalAnswers > 0">
-              ({{ Math.round(100 / results.totalAnswers) }} points per correct position)
-            </span>
-          </div>
-        </div>
-
-        <div class="ranking-details-list">
-          <div
-            v-for="detail in rankingDetails"
-            :key="detail.answerId"
-            class="card ranking-detail-item"
-            :class="{ correct: detail.isCorrect, incorrect: !detail.isCorrect }"
-          >
-            <div class="detail-content">
-              <!-- Status Icon -->
-              <div class="status-icon" :class="{ correct: detail.isCorrect, incorrect: !detail.isCorrect }">
-                {{ detail.isCorrect ? '✓' : '✗' }}
-              </div>
-
-              <!-- Answer Content -->
-              <div class="answer-info">
-                <div class="info-header">
-                  <div class="user-answer">
-                    <div class="detail-username">
-                      {{ detail.username }}
-                    </div>
-                    <div class="detail-answer-text">{{ detail.answerText }}</div>
-                  </div>
-                  <div class="actual-value-badge">
-                    {{ detail.actualValue }}
-                  </div>
+                <div class="sorting-start">
+                    <p v-if="gameStore.currentQuestion?.scaleFrom">From {{ gameStore.currentQuestion.scaleFrom }}</p>
+                    <p v-else>From lowest</p>
                 </div>
 
-                <!-- Position Info -->
-                <div class="position-info">
-                  <div class="position-item">
-                    <span class="position-label">Moderator Rank:</span> #{{ detail.moderatorPosition }}
-                  </div>
-                  <div class="position-item">
-                    <span class="position-label">Correct Rank:</span> #{{ detail.correctPosition }}
-                  </div>
-                  <div v-if="!detail.isCorrect" class="position-diff">
-                    ({{ detail.positionDiff > 0 ? '+' : '' }}{{ detail.positionDiff }} off)
-                  </div>
+                <RankingItem
+                    v-for="(answer, index) in sortedAnswers"
+                    :key="answer.id"
+                    variant="sortable"
+                    :rank="index + 1"
+                    :username="answer.username"
+                    :answer-text="answer.text"
+                    :is-first="index === 0"
+                    :is-last="index === sortedAnswers.length - 1"
+                    @move-up="moveUp(index)"
+                    @move-down="moveDown(index)"
+                />
+
+                <div class="sorting-end">
+                    <p v-if="gameStore.currentQuestion?.scaleTo">To {{ gameStore.currentQuestion.scaleTo }}</p>
+                    <p v-else>To highest</p>
                 </div>
-              </div>
+
+                <!-- Submit Ranking Button -->
+                <button
+                    @click="submitRanking"
+                    class="btn btn--icon submit-ranking-button"
+                >
+                    <img :src="submitIcon" alt="Submit ranking"/>
+                    <p>Submit Ranking</p>
+                </button>
             </div>
-          </div>
+
+            
+            </div>
+
+            <!-- Waiting for Moderator (Non-Moderators) - With Live Updates -->
+            <div v-else-if="!resultsReceived">
+            <!-- Question Card for Non-Moderators -->
+            <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
+
+            <div class="card waiting-card">
+                <div class="waiting-icon">⏳</div>
+                <h3 class="waiting-title">Moderator is Ranking</h3>
+                <p class="waiting-message">
+                Watch as they sort the answers...
+                </p>
+            </div>
+
+            <!-- Live Ranking Preview (Non-Moderators see this) -->
+            <div v-if="liveRankingAnswers.length > 0" class="live-ranking-list">
+                <RankingItem
+                    v-for="(answer, index) in liveRankingAnswers"
+                    :key="answer.id"
+                    variant="live"
+                    :rank="index + 1"
+                    :username="answer.username"
+                    :answer-text="answer.text"
+                />
+            </div>
+
+            <div v-else class="spinner-container">
+                <div class="spinner"></div>
+            </div>
         </div>
-      </div>
 
-      <!-- Next Round / End Game -->
-      <div class="transition-message">
-        {{ isLastRound ? 'Game ending...' : 'Next round starting soon...' }}
-      </div>
+        <!-- Results Display (After Moderator Submit) -->
+        <div v-else>
+            <!-- Question Card in Results -->
+            <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
+
+            <div class="card results-header">
+                <div v-if="results.isCorrect" class="result-icon success">
+                    <img :src="correctIcon" alt="Correct Icon" />
+                </div>
+                <div v-else class="result-icon error">❌</div>
+
+                <h2 class="result-title">
+                    {{ results.isCorrect ? 'Perfect Ranking!' : 'Not Quite!' }}
+                </h2>
+                <p class="result-message">
+                    {{ results.isCorrect ? 'Moderator got the ranking correct!' : 'Moderator\'s ranking was incorrect' }}
+                </p>
+                <button
+                    v-if="isModerator && !isLastRound"
+                    @click="startNextRound"
+                    class="btn btn-success w-full next-round-button"
+                >
+                    ▶️ Start Next Round
+                </button>
+            </div>
+
+            <!-- End Game Button (Moderator Only, Last Round) -->
+            <button
+                v-if="isModerator && isLastRound"
+                @click="startNextRound"
+                class="btn btn-primary w-full next-round-button"
+            >
+                🏆 View Final Scoreboard
+            </button>
+
+            <!-- Waiting Message for Non-Moderators -->
+            <div v-if="!isModerator" class="card waiting-next-round-card">
+                <div class="waiting-icon">⏳</div>
+                <p class="waiting-text">
+                <template v-if="!isLastRound">
+                    Waiting for moderator to start the next round...
+                </template>
+                <template v-else>
+                    Waiting for moderator to show the final scoreboard...
+                </template>
+                </p>
+            </div>
+
+            <!-- Current Scores -->
+            <div class="card current-scores-card">
+                <h3 class="scores-title">Current Scores</h3>
+                <div class="scores-list">
+                <div
+                    v-for="(score, playerId) in results.scores"
+                    :key="playerId"
+                    class="score-row"
+                >
+                    <span class="player-name">{{ getPlayerName(playerId) }}</span>
+                    <span class="score-value">{{ score }}</span>
+                </div>
+                </div>
+            </div>
+
+            <!-- Ranking Analysis -->
+            <div class="card ranking-analysis-card">
+                <h3 class="analysis-title">
+                Ranking Details
+                <span v-if="results.isCorrect" class="status-badge success">✓ Perfect!</span>
+                <span v-else class="status-badge error">✗ Not quite right</span>
+                </h3>
+
+                <!-- Points Summary -->
+                <div
+                v-if="results.pointsEarned !== undefined"
+                class="card points-summary"
+                >
+                <div class="summary-label">
+                    Moderator earned this round
+                </div>
+                <div class="points-earned">
+                    {{ results.pointsEarned }} <span class="max-points">/ 100</span>
+                </div>
+                <div class="summary-details">
+                    {{ results.correctlyPositioned }} of {{ results.totalAnswers }} correct
+                    <span v-if="results.totalAnswers > 0">
+                    ({{ Math.round(100 / results.totalAnswers) }} points per correct position)
+                    </span>
+                </div>
+                </div>
+
+                <div class="ranking-details-list">
+                    <RankingItem
+                        v-for="detail in rankingDetails"
+                        :key="detail.answerId"
+                        variant="detail"
+                        :rank="detail.correctPosition"
+                        :username="detail.username"
+                        :answer-text="detail.answerText"
+                        :is-correct="detail.isCorrect"
+                        :actual-value="detail.actualValue"
+                        :moderator-position="detail.moderatorPosition"
+                        :correct-position="detail.correctPosition"
+                        :position-diff="detail.positionDiff"
+                    />
+                </div>
+            </div>
+
+            <!-- Next Round / End Game -->
+            <div class="transition-message">
+                {{ isLastRound ? 'Game ending...' : 'Next round starting soon...' }}
+            </div>
+        </div>
+
     </div>
-
-  </div>
 </template>
 
 <script setup>
@@ -283,6 +201,10 @@ import { useLobbyStore } from '../stores/lobby'
 import { useSocketStore } from '../stores/socket'
 import { useUserStore } from '../stores/user'
 import QuestionCard from '../components/QuestionCard.vue'
+import RankingItem from '../components/RankingItem.vue'
+import submitIcon from '../../../icons/icon_submit.svg'
+import correctIcon from '../../../icons/icon_correct.svg'
+import wrongIcon from '../../../icons/icon_wrong.svg'
 
 const route = useRoute()
 const router = useRouter()

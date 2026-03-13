@@ -14,22 +14,20 @@
                 <template #actions>
                     <button
                     @click="leaveLobby"
-                    class="btn btn-secondary leave-button"
+                    class="btn btn--icon leave-button"
                     >
-                    🚪
+                        <img :src="doorIcon" alt="Leave Lobby" class="leave-icon" />
                     </button>
                     <div class="code-display"
                         @click="copyLobbyCode">
-                        <div class="code-text">
-                            Lobby {{ lobbyStore.lobbyCode || route.params.code }}
-                        </div>
+                        <p>Lobby {{ lobbyStore.lobbyCode || route.params.code }}</p>
                     </div>
                     <button
                         v-if="lobbyStore.isHost"
                         @click="showSettings = true"
-                        class="settings-button"
+                        class="btn btn--icon settings-button"
                     >
-                        ⚙️
+                        <img :src="settingsIcon" alt="Settings" class="settings-icon" />
                     </button>
                 </template>
             </AppHeader>
@@ -56,10 +54,7 @@
                 </p>
             </div>
 
-            <AppFooter
-                :joinCode="joinCode"
-                @handleNameSaved="handleNameSaved"
-            />
+            <AppFooter />
 
             <!-- Lobby Settings Modal -->
             <LobbySettings
@@ -85,6 +80,8 @@ import LobbyWaitView from './LobbyWaitView.vue'
 import GameView from './GameView.vue'
 import RoundResultsView from './RoundResultsView.vue'
 import ScoreboardView from './ScoreboardView.vue'
+import doorIcon from '../../../icons/icon_door.svg'
+import settingsIcon from '../../../icons/icon_settings.svg'
 
 const route = useRoute()
 const router = useRouter()

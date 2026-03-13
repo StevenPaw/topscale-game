@@ -1,16 +1,17 @@
 <template>
     <div class="view home-view">
-        <AppHeader HeaderTitle="Welcome to TopScale!">
+        <img
+            :src="logo"
+            alt="TopScale Logo"
+            class="home-logo"
+        />
+        <AppHeader :HeaderTitle="`Welcome to TopScale, ${userStore.username}!`">
             <template #actions>
             </template>
         </AppHeader>
         <div class="card home-card">
             <!-- Actions -->
             <div v-if="userStore.username">
-                <p class="text-center mb-6 greeting-text">
-                    Hello, <strong>{{ userStore.username }}</strong>! 👋
-                </p>
-
                 <div class="button-group">
                     <button
                         @click="createLobby"
@@ -31,17 +32,9 @@
             </div>
         </div>
 
-        <!-- Login Modal (placeholder) -->
-        <div v-if="showLoginModal" class="modal-overlay" @click="showLoginModal = false">
-            <div class="card modal-card" @click.stop>
-                <h3 class="mb-4">Login / Register</h3>
-                <p class="mb-4 modal-text">This feature will be implemented soon. For now, you can play without an account!</p>
-                <button class="btn btn-primary w-full" @click="showLoginModal = false">Close</button>
-            </div>
-        </div>
-
         <!-- Join Lobby Modal -->
-        <div v-if="showJoinModal" class="modal-overlay" @click="showJoinModal = false">
+        <Teleport to="body">
+            <div v-if="showJoinModal" class="modal-overlay" @click="showJoinModal = false">
             <div class="card modal-card" @click.stop>
                 <h3 class="mb-4">Join Lobby</h3>
                 <label class="label">Enter lobby code:</label>
@@ -62,6 +55,7 @@
                 </div>
             </div>
         </div>
+        </Teleport>
         <AppFooter
             :joinCode="joinCode"
             @handleNameSaved="handleNameSaved"
@@ -77,6 +71,8 @@
     import { useLobbyStore } from '../stores/lobby'
     import AppHeader from '../components/AppHeader.vue'
     import AppFooter from '../components/AppFooter.vue'
+    import logo from '../../../icons/nav_brand.svg'
+    import LoginModal from '../components/LoginModal.vue'
 
     const router = useRouter()
     const route = useRoute()
@@ -84,7 +80,6 @@
     const socketStore = useSocketStore()
     const lobbyStore = useLobbyStore()
 
-    const showLoginModal = ref(false)
     const showJoinModal = ref(false)
     const joinCode = ref('')
     const isCreating = ref(false)

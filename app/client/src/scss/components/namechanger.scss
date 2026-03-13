@@ -18,5 +18,25 @@
                 flex: 1;
             }
         }
+
+        .input-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .label {
+                font-weight: 600;
+                color: var(--ColorText);
+            }
+
+            .name-input {
+                padding: 8px 10px;
+            }
+
+            .datasecurity-hint {
+                font-size: 10px;
+                opacity: 0.3;
+            }
+        }
     }
 }

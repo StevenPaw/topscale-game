@@ -1,10 +1,11 @@
 <template>
     <!-- Settings Modal -->
-    <div
-    v-if="props.showSettings"
-    @click="emit('update:showSettings', false)"
-    class="modal-overlay modal-overlay--settings"
-    >
+    <Teleport to="body">
+        <div
+        v-if="props.showSettings"
+        @click="emit('update:showSettings', false)"
+        class="modal-overlay modal-overlay--settings"
+        >
         <div
             @click.stop
             class="card settings-modal"
@@ -42,9 +43,9 @@
                     </div>
                     </label>
                 </div>
-                <p v-if="!hasQuestionPacks" class="error-message">
-                    ⚠️ Please select at least one question pack
-                </p>
+                <ErrorMessage v-if="!hasQuestionPacks" 
+                    :Message="'Please select at least one question pack'"
+                />
             </div>
 
             <!-- Game Rules -->
@@ -100,18 +101,22 @@
             <!-- Save Button -->
             <button
             @click="saveSettings"
-            class="btn btn-success w-full save-button"
+            class="btn btn--icon btn--save"
             >
-            💾 Save Settings
+                <img :src="saveIcon" alt="Save Settings" class="save-icon" />
+                <p>Save Settings</p>
             </button>
         </div>
     </div>
+    </Teleport>
 </template>
 
 <script setup>
 import { ref, computed, watchEffect, onMounted } from 'vue'
 import { useLobbyStore } from '../stores/lobby'
 import { useSocketStore } from '../stores/socket'
+import ErrorMessage from './ErrorMessage.vue'
+import saveIcon from '../../../icons/icon_save.svg'
 
 // Props
 const props = defineProps({

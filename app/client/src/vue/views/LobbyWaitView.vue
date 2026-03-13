@@ -35,27 +35,28 @@
             </div>
 
             <span v-if="player.isHost" class="host-badge">
-                👑 Host
+                <img :src="hostIcon" alt="Host-Icon" />
+                <p>Host</p>
             </span>
             </div>
         </div>
         </div>
 
-        <div class="card start-card">
+        <div v-if="lobbyStore.isHost || lobbyStore.playerCount < 2" class="card start-card">
             <!-- Start Game Button -->
             <button
             v-if="lobbyStore.isHost"
             @click="startGame"
-            class="btn btn-success w-full start-game-button"
+            class="btn btn--icon start-game-button"
             :disabled="lobbyStore.playerCount < 2 || !hasQuestionPacks"
             >
-            <span>▶</span>
-            <span>Start Game</span>
+                <img :src="playIcon" alt="Start Game" class="start-icon" />
+                <p>Start Game</p>
             </button>
 
-            <p v-if="lobbyStore.isHost && lobbyStore.playerCount < 2" class="warning-message">
-            ⚠️ Need at least 2 players to start
-            </p>
+            <ErrorMessage v-if="lobbyStore.playerCount < 2" 
+                :Message="'Need at least 2 players to start'"
+            />
         </div>
     </div>
 </template>
@@ -67,6 +68,10 @@ import { useLobbyStore } from '../stores/lobby'
 import { useSocketStore } from '../stores/socket'
 import { useUserStore } from '../stores/user'
 import QRCode from 'qrcode'
+import ErrorMessage from '../components/ErrorMessage.vue'
+import playIcon from '../../../icons/icon_play.svg'
+import warningIcon from '../../../icons/icon_warning.svg'
+import hostIcon from '../../../icons/icon_host.svg'
 
 const route = useRoute()
 const router = useRouter()
