@@ -47,4 +47,9 @@ class Question extends DataObject
 
         return $fields;
     }
+
+    public function getTitle()
+    {
+        return $this->Content . ' (' . $this->ScaleStart . ' - ' . $this->ScaleEnd . ')';
+    }
 }

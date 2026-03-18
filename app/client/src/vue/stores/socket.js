@@ -61,6 +61,9 @@ export const useSocketStore = defineStore('socket', () => {
       console.log('✅ WebSocket connected')
       isConnected.value = true
       connectionError.value = null
+
+      // Try to rejoin if we have a saved session
+      attemptRejoin()
     })
 
     socket.value.on('disconnect', () => {
@@ -100,6 +103,32 @@ export const useSocketStore = defineStore('socket', () => {
       }
     })
 
+    socket.value.on('lobby:rejoined', (data) => {
+      console.log('🔄 Rejoined lobby:', data)
+      lobbyStore.setLobbyCode(data.code)
+      lobbyStore.setIsHost(data.isHost)
+      lobbyStore.players = data.players || []
+      lobbyStore.spectators = data.spectators || []
+      if (data.settings) {
+        lobbyStore.updateSettings(data.settings)
+      }
+      if (data.gameState) {
+        gameStore.setGameState(data.gameState)
+      }
+      if (data.currentRound) {
+        gameStore.currentRound = data.currentRound
+      }
+      if (data.scores) {
+        gameStore.setScores(data.scores)
+      }
+    })
+
+    socket.value.on('lobby:rejoin-failed', (data) => {
+      console.log('❌ Rejoin failed:', data.message)
+      // Clear saved session if rejoin fails
+      lobbyStore.clearLocalStorage()
+    })
+
     socket.value.on('lobby:player-joined', (player) => {
       console.log('Player joined:', player)
       lobbyStore.addPlayer(player)
@@ -110,6 +139,22 @@ export const useSocketStore = defineStore('socket', () => {
       lobbyStore.removePlayer(data.playerId)
     })
 
+    socket.value.on('lobby:player-updated', (data) => {
+      console.log('👤 Player updated (rejoin):', data)
+      // Find player by old socket ID and update to new socket ID
+      const playerIndex = lobbyStore.players.findIndex(p => p.id === data.oldSocketId)
+      if (playerIndex !== -1) {
+        lobbyStore.players[playerIndex] = data.player
+        console.log(`✅ Updated player ${data.player.username} from socketId ${data.oldSocketId} to ${data.player.id}`)
+      }
+
+      // Also check spectators
+      const spectatorIndex = lobbyStore.spectators.findIndex(s => s.id === data.oldSocketId)
+      if (spectatorIndex !== -1) {
+        lobbyStore.spectators[spectatorIndex] = data.player
+      }
+    })
+
     socket.value.on('lobby:spectator-joined', (spectator) => {
       console.log('Spectator joined:', spectator)
       lobbyStore.addSpectator(spectator)
@@ -118,6 +163,21 @@ export const useSocketStore = defineStore('socket', () => {
     socket.value.on('lobby:settings-updated', (settings) => {
       console.log('Lobby settings updated:', settings)
       lobbyStore.updateSettings(settings)
+    })
+
+    socket.value.on('lobby:host-changed', (data) => {
+      console.log('👑 Host changed:', data.newHost)
+      // Update host status in players list
+      lobbyStore.players = lobbyStore.players.map(p => ({
+        ...p,
+        isHost: p.id === data.newHost.id
+      }))
+      // Update local isHost if this player is the new host
+      const userStore = useUserStore()
+      if (socket.value?.id === data.newHost.id) {
+        lobbyStore.setIsHost(true)
+        console.log('🎉 You are now the host!')
+      }
     })
 
     // Game events
@@ -161,6 +221,13 @@ export const useSocketStore = defineStore('socket', () => {
       }
     })
 
+    socket.value.on('game:force-ended', (data) => {
+      console.log('⚠️ Game force ended:', data.reason)
+      gameStore.setGameState('finished')
+      // Show reason to user
+      alert(data.message || 'Game ended: Not enough players')
+    })
+
     socket.value.on('timer:tick', (data) => {
       gameStore.setTimeRemaining(data.timeRemaining)
     })
@@ -172,7 +239,11 @@ export const useSocketStore = defineStore('socket', () => {
       console.error('Socket not connected')
       return
     }
-    socket.value.emit('lobby:create', { username })
+    const userStore = useUserStore()
+    socket.value.emit('lobby:create', {
+      username,
+      sessionId: userStore.sessionId
+    })
   }
 
   function joinLobby(code, username, asSpectator = false) {
@@ -180,7 +251,34 @@ export const useSocketStore = defineStore('socket', () => {
       console.error('Socket not connected')
       return
     }
-    socket.value.emit('lobby:join', { code, username, asSpectator })
+    const userStore = useUserStore()
+    socket.value.emit('lobby:join', {
+      code,
+      username,
+      asSpectator,
+      sessionId: userStore.sessionId
+    })
+  }
+
+  function rejoinLobby(code, username, sessionId) {
+    if (!socket.value) {
+      console.error('Socket not connected')
+      return
+    }
+    console.log('🔄 Attempting to rejoin lobby:', code)
+    socket.value.emit('lobby:rejoin', { code, username, sessionId })
+  }
+
+  function attemptRejoin() {
+    const lobbyStore = useLobbyStore()
+    const userStore = useUserStore()
+
+    const savedSession = lobbyStore.loadFromLocalStorage()
+
+    if (savedSession.lobbyCode && userStore.username && userStore.sessionId) {
+      console.log('🔄 Found saved session, attempting rejoin...')
+      rejoinLobby(savedSession.lobbyCode, userStore.username, userStore.sessionId)
+    }
   }
 
   function leaveLobby() {
@@ -226,6 +324,8 @@ export const useSocketStore = defineStore('socket', () => {
     disconnect,
     createLobby,
     joinLobby,
+    rejoinLobby,
+    attemptRejoin,
     leaveLobby,
     kickPlayer,
     startGame,

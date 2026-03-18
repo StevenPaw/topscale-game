@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -33,6 +35,24 @@ class QuestionGroup extends DataObject
     ];
 
     private static $summary_fields = [
-
+        'ID' => 'ID',
+        'Title' => 'Title',
+        'Only18' => '18+',
+        'Questions.Count' => '# Questions'
     ];
+
+    private static $field_labels = [
+        'Only18' => 'Only for users over 18'
+    ];
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        //Move Questions into main tab
+        $fields->removeByName('Questions');
+        $gridfieldConfig = GridFieldConfig_RelationEditor::create();
+        $gridfield = GridField::create('Questions', 'Questions', $this->Questions(), $gridfieldConfig);
+        $fields->addFieldToTab('Root.Main', $gridfield);
+        return $fields;
+    }
 }

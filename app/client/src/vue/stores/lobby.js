@@ -24,10 +24,39 @@ export const useLobbyStore = defineStore('lobby', () => {
   // Actions
   function setLobbyCode(code) {
     lobbyCode.value = code.toUpperCase()
+    localStorage.setItem('quiz_lobby_code', lobbyCode.value)
   }
 
   function setIsHost(value) {
     isHost.value = value
+    localStorage.setItem('quiz_is_host', value.toString())
+  }
+
+  function saveToLocalStorage() {
+    localStorage.setItem('quiz_lobby_code', lobbyCode.value)
+    localStorage.setItem('quiz_is_host', isHost.value.toString())
+  }
+
+  function loadFromLocalStorage() {
+    const savedLobbyCode = localStorage.getItem('quiz_lobby_code')
+    const savedIsHost = localStorage.getItem('quiz_is_host')
+
+    if (savedLobbyCode) {
+      lobbyCode.value = savedLobbyCode
+    }
+    if (savedIsHost !== null) {
+      isHost.value = savedIsHost === 'true'
+    }
+
+    return {
+      lobbyCode: savedLobbyCode,
+      isHost: savedIsHost === 'true'
+    }
+  }
+
+  function clearLocalStorage() {
+    localStorage.removeItem('quiz_lobby_code')
+    localStorage.removeItem('quiz_is_host')
   }
 
   function addPlayer(player) {
@@ -66,6 +95,7 @@ export const useLobbyStore = defineStore('lobby', () => {
       maxPlayers: 8,
       totalRounds: 10
     }
+    clearLocalStorage()
   }
 
   return {
@@ -85,6 +115,9 @@ export const useLobbyStore = defineStore('lobby', () => {
     addSpectator,
     removeSpectator,
     updateSettings,
+    saveToLocalStorage,
+    loadFromLocalStorage,
+    clearLocalStorage,
     reset
   }
 })

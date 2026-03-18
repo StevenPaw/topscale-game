@@ -12,8 +12,8 @@
                 </h2>
 
                 <div class="sorting-start">
-                    <p v-if="gameStore.currentQuestion?.scaleFrom">From {{ gameStore.currentQuestion.scaleFrom }}</p>
-                    <p v-else>From lowest</p>
+                    <p v-if="gameStore.currentQuestion?.scaleTo">To {{ gameStore.currentQuestion.scaleTo }}</p>
+                    <p v-else>To highest</p>
                 </div>
 
                 <RankingItem
@@ -30,8 +30,8 @@
                 />
 
                 <div class="sorting-end">
-                    <p v-if="gameStore.currentQuestion?.scaleTo">To {{ gameStore.currentQuestion.scaleTo }}</p>
-                    <p v-else>To highest</p>
+                    <p v-if="gameStore.currentQuestion?.scaleFrom">From {{ gameStore.currentQuestion.scaleFrom }}</p>
+                    <p v-else>From lowest</p>
                 </div>
 
                 <!-- Submit Ranking Button -->
@@ -44,7 +44,7 @@
                 </button>
             </div>
 
-            
+
             </div>
 
             <!-- Waiting for Moderator (Non-Moderators) - With Live Updates -->
@@ -249,12 +249,12 @@ const rankingDetails = computed(() => {
       isCorrect,
       positionDiff
     }
-  }).sort((a, b) => a.correctPosition - b.correctPosition) // Sort by correct position
+  }).sort((a, b) => b.correctPosition - a.correctPosition) // Sort by correct position (highest first)
 })
 
 onMounted(() => {
-  // Get answers from game store (set by GameView)
-  sortedAnswers.value = [...(gameStore.answersForRanking || [])]
+  // Get answers from game store (set by GameView) and reverse to show highest first
+  sortedAnswers.value = [...(gameStore.answersForRanking || [])].reverse()
 
   // Listen for live ranking updates (non-moderators)
   socketStore.socket?.on('ranking:live-update', (data) => {
