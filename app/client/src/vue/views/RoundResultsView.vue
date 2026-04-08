@@ -5,6 +5,12 @@
             <!-- Question Card -->
             <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
 
+            <!-- Moderator Info -->
+            <div class="moderator-info-card">
+                <span class="moderator-label">👑 Moderator this round:</span>
+                <span class="moderator-name">{{ moderatorName }}</span>
+            </div>
+
             <!-- Sortable Answer List -->
             <div class="card card--sortable-list">
                 <h2 class="view-title">
@@ -12,8 +18,8 @@
                 </h2>
 
                 <div class="sorting-start">
-                    <p v-if="gameStore.currentQuestion?.scaleTo">To {{ gameStore.currentQuestion.scaleTo }}</p>
-                    <p v-else>To highest</p>
+                    <p v-if="gameStore.currentQuestion?.scaleFrom">From {{ gameStore.currentQuestion.scaleFrom }}</p>
+                    <p v-else>From lowest</p>
                 </div>
 
                 <RankingItem
@@ -30,8 +36,8 @@
                 />
 
                 <div class="sorting-end">
-                    <p v-if="gameStore.currentQuestion?.scaleFrom">From {{ gameStore.currentQuestion.scaleFrom }}</p>
-                    <p v-else>From lowest</p>
+                    <p v-if="gameStore.currentQuestion?.scaleTo">To {{ gameStore.currentQuestion.scaleTo }}</p>
+                    <p v-else>To highest</p>
                 </div>
 
                 <!-- Submit Ranking Button -->
@@ -51,6 +57,12 @@
             <div v-else-if="!resultsReceived">
             <!-- Question Card for Non-Moderators -->
             <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
+
+            <!-- Moderator Info -->
+            <div class="moderator-info-card">
+                <span class="moderator-label">👑 Moderator this round:</span>
+                <span class="moderator-name">{{ moderatorName }}</span>
+            </div>
 
             <div class="card waiting-card">
                 <div class="waiting-icon">⏳</div>
@@ -81,6 +93,12 @@
         <div v-else>
             <!-- Question Card in Results -->
             <QuestionCard v-if="gameStore.currentQuestion" :question="gameStore.currentQuestion" variant="compact" />
+
+            <!-- Moderator Info -->
+            <div class="moderator-info-card">
+                <span class="moderator-label">👑 Moderator this round:</span>
+                <span class="moderator-name">{{ moderatorName }}</span>
+            </div>
 
             <div class="card results-header">
                 <div v-if="results.isCorrect" class="result-icon success">
@@ -252,6 +270,12 @@ const isLastRound = computed(() => {
   return gameStore.currentRound >= gameStore.totalRounds
 })
 
+const moderatorName = computed(() => {
+  if (!gameStore.currentRoundLeader) return 'Unknown'
+  const moderator = lobbyStore.players.find(p => p.id === gameStore.currentRoundLeader.id)
+  return moderator ? moderator.username : 'Unknown'
+})
+
 const rankingDetails = computed(() => {
   if (!results.value || !results.value.answers) return []
 
@@ -389,6 +413,30 @@ function getPlayerName(playerId) {
 </script>
 
 <style scoped>
+.moderator-info-card {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.moderator-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.moderator-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+}
+
 .ranking-comparison {
     display: grid;
     grid-template-columns: 1fr 1fr;
