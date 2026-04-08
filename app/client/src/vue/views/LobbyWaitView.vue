@@ -54,7 +54,7 @@
                 <p>Start Game</p>
             </button>
 
-            <ErrorMessage v-if="lobbyStore.playerCount < 2" 
+            <ErrorMessage v-if="lobbyStore.playerCount < 2"
                 :Message="'Need at least 2 players to start'"
             />
         </div>

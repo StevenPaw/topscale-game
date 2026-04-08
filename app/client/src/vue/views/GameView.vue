@@ -86,12 +86,6 @@
 
     <!-- Game Status Header -->
     <div class="game-header">
-      <div class="status-indicator">
-        <div class="status-dot"></div>
-        <span class="status-text">
-          Game Active
-        </span>
-      </div>
       <span class="round-counter">
         Round {{ currentRound }} of {{ totalRounds }}
       </span>

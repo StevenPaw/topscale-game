@@ -27,8 +27,8 @@
           <div
             v-for="(player, index) in gameStore.sortedScores"
             :key="player.playerId"
-            style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; background: white; border: 2px solid var(--gray-200); border-radius: 0.75rem; transition: all 0.2s;"
-            :style="index === 0 ? 'border-color: gold; background: #fffbeb;' : index === 1 ? 'border-color: silver;' : index === 2 ? 'border-color: #cd7f32;' : ''"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; background: #000; border: 2px solid var(--gray-200); border-radius: 0.75rem; transition: all 0.2s;"
+            :style="index === 0 ? 'border-color: gold; background: #000;' : index === 1 ? 'border-color: silver;' : index === 2 ? 'border-color: #cd7f32;' : ''"
           >
             <div style="display: flex; align-items: center; gap: 1rem;">
               <span style="font-size: 1.5rem; font-weight: 700; min-width: 2rem;">

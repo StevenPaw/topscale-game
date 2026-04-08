@@ -167,20 +167,45 @@
                 </div>
                 </div>
 
-                <div class="ranking-details-list">
-                    <RankingItem
-                        v-for="detail in rankingDetails"
-                        :key="detail.answerId"
-                        variant="detail"
-                        :rank="detail.correctPosition"
-                        :username="detail.username"
-                        :answer-text="detail.answerText"
-                        :is-correct="detail.isCorrect"
-                        :actual-value="detail.actualValue"
-                        :moderator-position="detail.moderatorPosition"
-                        :correct-position="detail.correctPosition"
-                        :position-diff="detail.positionDiff"
-                    />
+                <!-- Side-by-Side Comparison -->
+                <div class="ranking-comparison">
+                    <div class="comparison-column">
+                        <h4 class="column-title">Correct Order</h4>
+                        <div class="comparison-list">
+                            <RankingItem
+                                v-for="detail in rankingDetails"
+                                :key="'correct-' + detail.answerId"
+                                variant="detail"
+                                :rank="detail.correctPosition"
+                                :username="detail.username"
+                                :answer-text="detail.answerText"
+                                :is-correct="detail.isCorrect"
+                                :actual-value="detail.actualValue"
+                                :moderator-position="null"
+                                :correct-position="null"
+                                :position-diff="0"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="comparison-column">
+                        <h4 class="column-title">Moderator's Order</h4>
+                        <div class="comparison-list">
+                            <RankingItem
+                                v-for="detail in moderatorRankingDetails"
+                                :key="'moderator-' + detail.answerId"
+                                variant="detail"
+                                :rank="detail.moderatorPosition"
+                                :username="detail.username"
+                                :answer-text="detail.answerText"
+                                :is-correct="detail.isCorrect"
+                                :actual-value="detail.actualValue"
+                                :moderator-position="null"
+                                :correct-position="null"
+                                :position-diff="0"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -252,6 +277,31 @@ const rankingDetails = computed(() => {
   }).sort((a, b) => b.correctPosition - a.correctPosition) // Sort by correct position (highest first)
 })
 
+const moderatorRankingDetails = computed(() => {
+  if (!results.value || !results.value.answers) return []
+
+  const { answers, moderatorRanking, correctRanking } = results.value
+
+  return answers.map(answer => {
+    // Find positions (1-based)
+    const moderatorPosition = moderatorRanking.indexOf(answer.id) + 1
+    const correctPosition = correctRanking.indexOf(answer.id) + 1
+    const isCorrect = moderatorPosition === correctPosition
+    const positionDiff = moderatorPosition - correctPosition
+
+    return {
+      answerId: answer.id,
+      username: answer.username,
+      answerText: answer.text,
+      actualValue: answer.scaleValue,
+      moderatorPosition,
+      correctPosition,
+      isCorrect,
+      positionDiff
+    }
+  }).sort((a, b) => b.moderatorPosition - a.moderatorPosition) // Sort by moderator position (highest first)
+})
+
 onMounted(() => {
   // Get answers from game store (set by GameView) and reverse to show highest first
   sortedAnswers.value = [...(gameStore.answersForRanking || [])].reverse()
@@ -274,6 +324,11 @@ onMounted(() => {
     // No automatic navigation - moderator controls when to continue
     console.log('📊 Results received, waiting for moderator to start next round')
   })
+
+  // Send initial ranking to all players immediately if this user is the moderator
+  if (isModerator.value) {
+    sendLiveRankingUpdate()
+  }
 })
 
 function startNextRound() {
@@ -332,3 +387,43 @@ function getPlayerName(playerId) {
 // This should be passed from GameView or fetched from a store
 // For now, we'll rely on the socket event to determine moderator
 </script>
+
+<style scoped>
+.ranking-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .ranking-comparison {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+.comparison-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.column-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.comparison-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+</style>
+
